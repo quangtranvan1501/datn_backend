@@ -1,6 +1,7 @@
 const httpStatus = require('http-status');
 const { User } = require('../models');
 const ApiError = require('../utils/ApiError');
+const { update } = require('../models/token.model');
 
 /**
  * Create a user
@@ -10,6 +11,9 @@ const ApiError = require('../utils/ApiError');
 const createUser = async (userBody) => {
   if (await User.isEmailTaken(userBody.email)) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
+  }
+  if (await User.isUsername(userBody.username)) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Username đã tồn tại');
   }
   return User.create(userBody);
 };
@@ -47,6 +51,15 @@ const getUserByEmail = async (email) => {
 };
 
 /**
+ * Get user by username
+ * @param {string} username
+ * @returns {Promise<User>}
+ */
+const getUserByUsername = async (username) => {
+  return User.findOne({ username });
+};
+
+/**
  * Update user by id
  * @param {ObjectId} userId
  * @param {Object} updateBody
@@ -65,6 +78,15 @@ const updateUserById = async (userId, updateBody) => {
   return user;
 };
 
+const updateUserByEmail = async (email, updateBody) => { 
+  const user = await getUserByEmail(email);
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+  } 
+  Object.assign(user, updateBody);
+  await user.save();
+  return user;
+}
 /**
  * Delete user by id
  * @param {ObjectId} userId
@@ -85,5 +107,7 @@ module.exports = {
   getUserById,
   getUserByEmail,
   updateUserById,
+  updateUserByEmail,
   deleteUserById,
+  getUserByUsername
 };

@@ -1,11 +1,15 @@
 const Joi = require('joi');
 const { password } = require('./custom.validation');
+const { use } = require('passport');
+const { ge } = require('faker/lib/locales');
 
 const register = {
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required().custom(password),
     name: Joi.string().required(),
+    username: Joi.string().required(),
+    gender: Joi.string().required().valid('Male', 'Female', 'Other'),
   }),
 };
 
@@ -35,11 +39,12 @@ const forgotPassword = {
 };
 
 const resetPassword = {
-  query: Joi.object().keys({
-    token: Joi.string().required(),
-  }),
+  // query: Joi.object().keys({
+  //   token: Joi.string().required(),
+  // }),
   body: Joi.object().keys({
-    password: Joi.string().required().custom(password),
+    currentPassword: Joi.string().required(),
+    newPassword: Joi.string().required().custom(password),
   }),
 };
 

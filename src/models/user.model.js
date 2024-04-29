@@ -6,10 +6,22 @@ const { roles } = require('../config/roles');
 
 const userSchema = mongoose.Schema(
   {
+    username: {
+      type: String,
+      required: true,
+      trim: true,
+      unique: true,
+    },
     name: {
       type: String,
       required: true,
       trim: true,
+    },
+    gender: {
+      type: String,
+      required: true,
+      trim: true,
+      default:"Male"
     },
     email: {
       type: String,
@@ -35,14 +47,51 @@ const userSchema = mongoose.Schema(
       },
       private: true, // used by the toJSON plugin
     },
+    status: {
+      type: String,
+      enum: ['active', 'disabled'],
+      default: 'active',
+    },
     role: {
       type: String,
       enum: roles,
       default: 'user',
     },
+    phoneNumber:{
+      type: String,
+      required: true,
+      trim: true,
+      unique: true,
+    },
+    address:{
+      type: String,
+      required: true,
+      trim: true,
+    },
+    birthday:{
+      type: Date,
+      required: true,
+      trim: true,
+    },
     isEmailVerified: {
       type: Boolean,
       default: false,
+    },
+    idDoctor:{
+      type: String,
+      trim: false,
+    },
+    positon:{
+      type: String,
+      trim: false,
+    },
+    specialist:{
+      type: String,
+      trim: false,
+    },
+    idPatient:{
+      type: String,
+      trim: false,
     },
   },
   {
@@ -64,7 +113,10 @@ userSchema.statics.isEmailTaken = async function (email, excludeUserId) {
   const user = await this.findOne({ email, _id: { $ne: excludeUserId } });
   return !!user;
 };
-
+userSchema.statics.isUsername = async function (username, excludeUserId) {
+  const user = await this.findOne({ username, _id: { $ne: excludeUserId } });
+  return !!user;
+};
 /**
  * Check if password matches the user's password
  * @param {string} password

@@ -4,7 +4,7 @@ const userService = require('./user.service');
 const Token = require('../models/token.model');
 const ApiError = require('../utils/ApiError');
 const { tokenTypes } = require('../config/tokens');
-
+const bcrypt = require('bcryptjs');
 /**
  * Login with username and password
  * @param {string} email
@@ -12,7 +12,10 @@ const { tokenTypes } = require('../config/tokens');
  * @returns {Promise<User>}
  */
 const loginUserWithEmailAndPassword = async (email, password) => {
-  const user = await userService.getUserByEmail(email);
+  const user = await userService.getUserByEmail(email) || await userService.getUserByUsername(email);
+  if (user.status === 'disable') {
+    throw new ApiError(httpStatus.FORBIDDEN, 'Account is disabled');
+  }
   if (!user || !(await user.isPasswordMatch(password))) {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect email or password');
   }
@@ -53,19 +56,19 @@ const refreshAuth = async (refreshToken) => {
 
 /**
  * Reset password
- * @param {string} resetPasswordToken
  * @param {string} newPassword
  * @returns {Promise}
  */
-const resetPassword = async (resetPasswordToken, newPassword) => {
+const resetPassword = async (id, currentPassword, newPassword) => {
   try {
-    const resetPasswordTokenDoc = await tokenService.verifyToken(resetPasswordToken, tokenTypes.RESET_PASSWORD);
-    const user = await userService.getUserById(resetPasswordTokenDoc.user);
-    if (!user) {
-      throw new Error();
+    const user = await userService.getUserById(id);
+    // const currentPassword2 = await bcrypt.hash(currentPassword, 8)
+    const passwordMatch = await bcrypt.compare(currentPassword, user.password);
+    if(user != null && !passwordMatch){
+      throw new ApiError(httpStatus.CONFLICT, 'Mật khẩu hiện tại không đúng');
     }
     await userService.updateUserById(user.id, { password: newPassword });
-    await Token.deleteMany({ user: user.id, type: tokenTypes.RESET_PASSWORD });
+    // await Token.deleteMany({ user: user.id, type: tokenTypes.RESET_PASSWORD });
   } catch (error) {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Password reset failed');
   }
