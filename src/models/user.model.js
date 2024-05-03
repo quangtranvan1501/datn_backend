@@ -6,11 +6,6 @@ const { roles } = require('../config/roles');
 
 const userSchema = mongoose.Schema(
   {
-    userId: { 
-      type: Number, 
-      required: true,
-      trim: true,
-    },
     username: {
       type: String,
       required: true,
@@ -101,23 +96,6 @@ const userSchema = mongoose.Schema(
 // add plugin that converts mongoose to json
 userSchema.plugin(toJSON);
 userSchema.plugin(paginate);
-
-userSchema.pre('save', async function (next) {
-  const user = this;
-  // if (!user.isNew) return next(); 
-  if (!user.userId) {
-    try {
-      const lastUser = await mongoose.model('User').findOne({}, {}, { sort: { 'userId': -1 } }); 
-      console.log(lastUser)
-      user.userId = lastUser ? lastUser.userId + 1 : 1; 
-      console.log(user.userId)
-      next();
-    } catch (error) {
-      next(error);
-    }
-  }
-  next();
-});
 
 /**
  * Check if email is taken

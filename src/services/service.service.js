@@ -32,7 +32,7 @@ const queryServices = async (filter, options) => {
 
 /**
  * Get service by id
- * @param {Number} idService
+ * @param {ObjectId} idService
  * @returns {Promise<Service>}
  */
 const getServiceById = async (idService) => {
@@ -41,7 +41,7 @@ const getServiceById = async (idService) => {
 
 /**
  * Update service by id
- * @param {Number} idService
+ * @param {ObjectId} idService
  * @param {Object} updateBody
  * @returns {Promise<Service>}
  */
@@ -57,7 +57,7 @@ const updateServiceById = async (idService, updateBody) => {
 
 /**
  * Delete service by id
- * @param {Number} idService
+ * @param {ObjectId} idService
  * @returns {Promise<Service>}
  */
 const deleteServiceById = async (idService) => {

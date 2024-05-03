@@ -3,11 +3,11 @@ const { toJSON, paginate } = require('./plugins');
 
 const serviceSchema = mongoose.Schema(
   {
-    serviceId: {
-      type: Number,
-      required: false,
-      unique: true,
-    },
+    // serviceId: {
+    //   type: Number,
+    //   required: false,
+    //   unique: true,
+    // },
     name: {
       type: String,
       required: true,
@@ -30,21 +30,24 @@ const serviceSchema = mongoose.Schema(
   }
 );
 
-serviceSchema.pre('save', async function (next) {
-  const service = this;
-  if (!service.isNew) return next(); 
-  try {
-    const lastService = await mongoose.model('Service').findOne({}, {}, { sort: { 'serviceId': -1 } }); 
-    service.serviceId = lastService ? lastService.serviceId + 1 : 1; 
-    next();
-  } catch (error) {
-    next(error);
-  }
-});
+// serviceSchema.pre('save', async function (next) {
+//   const service = this;
+//   if (!service.isNew) return next(); 
+//   try {
+//     const lastService = await mongoose.model('Service').findOne({}, {}, { sort: { 'serviceId': -1 } }); 
+//     service.serviceId = lastService ? lastService.serviceId + 1 : 1; 
+//     next();
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 serviceSchema.plugin(toJSON);
 serviceSchema.plugin(paginate);
 
+/**
+ * @typedef Service
+ */
 const Service = mongoose.model('Service', serviceSchema);
 
 module.exports = Service;
