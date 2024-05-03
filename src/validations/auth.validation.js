@@ -1,7 +1,5 @@
 const Joi = require('joi');
 const { password } = require('./custom.validation');
-const { use } = require('passport');
-const { ge } = require('faker/lib/locales');
 
 const register = {
   body: Joi.object().keys({
@@ -10,6 +8,11 @@ const register = {
     name: Joi.string().required(),
     username: Joi.string().required(),
     gender: Joi.string().required().valid('Male', 'Female', 'Other'),
+    phoneNumber: Joi.string().required(),
+    address: Joi.string().required(),
+    birthday: Joi.date().required(),
+    positon: Joi.string(),
+    specialist: Joi.string(),
   }),
 };
 

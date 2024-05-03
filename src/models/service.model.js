@@ -3,9 +3,9 @@ const { toJSON, paginate } = require('./plugins');
 
 const serviceSchema = mongoose.Schema(
   {
-    idService: {
+    serviceId: {
       type: Number,
-      required: true,
+      required: false,
       unique: true,
     },
     name: {
@@ -29,6 +29,18 @@ const serviceSchema = mongoose.Schema(
     timestamps: true,
   }
 );
+
+serviceSchema.pre('save', async function (next) {
+  const service = this;
+  if (!service.isNew) return next(); 
+  try {
+    const lastService = await mongoose.model('Service').findOne({}, {}, { sort: { 'serviceId': -1 } }); 
+    service.serviceId = lastService ? lastService.serviceId + 1 : 1; 
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
 
 serviceSchema.plugin(toJSON);
 serviceSchema.plugin(paginate);

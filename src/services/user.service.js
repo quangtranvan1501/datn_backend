@@ -42,6 +42,16 @@ const getUserById = async (id) => {
 };
 
 /**
+ * Get user by id
+ * @param {Number} userId
+ * @returns {Promise<User>}
+ */
+const getUserByUserId = async (userId) => {
+  console.log(userId)
+  return User.findOne({userId});
+};
+
+/**
  * Get user by email
  * @param {string} email
  * @returns {Promise<User>}
@@ -105,6 +115,7 @@ module.exports = {
   createUser,
   queryUsers,
   getUserById,
+  getUserByUserId,
   getUserByEmail,
   updateUserById,
   updateUserByEmail,

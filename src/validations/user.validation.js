@@ -1,6 +1,5 @@
 const Joi = require('joi');
 const { password, objectId } = require('./custom.validation');
-const { ge } = require('faker/lib/locales');
 
 const createUser = {
   body: Joi.object().keys({
@@ -10,6 +9,11 @@ const createUser = {
     username: Joi.string().required(),
     gender: Joi.string().required().valid('Male', 'Female', 'Other'), 
     role: Joi.string().required().valid('user', 'admin', 'doctor'),
+    phoneNumber: Joi.string().required(),
+    address: Joi.string().required(),
+    birthday: Joi.date().required(),
+    positon: Joi.string(),
+    specialist: Joi.string(),
   }),
 };
 
@@ -25,7 +29,8 @@ const getUsers = {
 
 const getUser = {
   params: Joi.object().keys({
-    userId: Joi.string().custom(objectId),
+    // userId: Joi.string().custom(objectId),
+    userId: Joi.number().integer(),
   }),
 };
 
@@ -38,6 +43,13 @@ const updateUser = {
       email: Joi.string().email(),
       // password: Joi.string().custom(password),
       name: Joi.string(),
+      username: Joi.string(),
+      gender: Joi.string(),
+      phoneNumber: Joi.string(),
+      address: Joi.string(),
+      birthday: Joi.date(),
+      positon: Joi.string(),
+      specialist: Joi.string(),
     })
     .min(1),
 };
