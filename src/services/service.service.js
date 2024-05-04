@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const Service = require('../models/service.model');
+const {Service} = require('../models');
 const ApiError = require('../utils/ApiError');
 
 /**
@@ -36,7 +36,7 @@ const queryServices = async (filter, options) => {
  * @returns {Promise<Service>}
  */
 const getServiceById = async (idService) => {
-  return Service.findOne({ idService });
+  return Service.findById(idService);
 };
 
 /**
@@ -71,7 +71,7 @@ const deleteServiceById = async (idService) => {
 
 /**
  * Get list of specialists
- * @returns {Promise<Array<string>>} List of specialists
+ * @returns {Promise<Specialists<string>>} List of specialists
  */
 const getSpecialists = async () => {
     try {

@@ -6,18 +6,18 @@ const auth = require('../../middlewares/auth');
 
 const router = express.Router();
 
+router.route('/specialist').get(serviceController.getSpecialists);
+
 router
   .route('/')
   .post(auth(), validate(serviceValidation.createService), serviceController.createService)
-  .get(auth(), validate(serviceValidation.getServices), serviceController.getServices);
+  .get(serviceController.getServices);
 
 router
-    .route('/:id')
+    .route('/:serviceId')
     .get(auth(), validate(serviceValidation.getServiceById), serviceController.getServiceById)
-    .patch(auth(), validate(serviceValidation.updateService), serviceController.updateServiceById)
-    .delete(auth(), validate(serviceValidation.deleteService), serviceController.deleteServiceById);
-
-router.get('/specialist', serviceController.getSpecialists);
+    .patch(auth('manageUsers'), validate(serviceValidation.updateService), serviceController.updateServiceById)
+    .delete(auth('manageUsers'), validate(serviceValidation.deleteService), serviceController.deleteServiceById);
 
 module.exports = router;
 

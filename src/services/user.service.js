@@ -41,15 +41,15 @@ const getUserById = async (id) => {
   return User.findById(id);
 };
 
-/**
- * Get user by id
- * @param {Number} userId
- * @returns {Promise<User>}
- */
-const getUserByUserId = async (userId) => {
-  console.log(userId)
-  return User.findOne({userId});
-};
+// /**
+//  * Get user by id
+//  * @param {Number} userId
+//  * @returns {Promise<User>}
+//  */
+// const getUserByUserId = async (userId) => {
+//   console.log(userId)
+//   return User.findOne({userId});
+// };
 
 /**
  * Get user by email
@@ -115,7 +115,7 @@ module.exports = {
   createUser,
   queryUsers,
   getUserById,
-  getUserByUserId,
+  // getUserByUserId,
   getUserByEmail,
   updateUserById,
   updateUserByEmail,

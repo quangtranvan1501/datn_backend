@@ -12,7 +12,10 @@ const createService = catchAsync(async (req, res) => {
 
 const getServices = catchAsync(async (req, res) => {
   const services = await Service.find();
-  res.send(services);
+  res.send({
+    data: services,
+    totalResult: services.length
+  });
 });
 
 const getServiceById = catchAsync(async (req, res) => {
@@ -24,7 +27,7 @@ const getServiceById = catchAsync(async (req, res) => {
 });
 
 const updateServiceById = catchAsync(async (req, res) => {
-  const service = await serviceService.updateServiceById(req.params.serviceId, req.body, { new: true });
+  const service = await serviceService.updateServiceById(req.params.serviceId, req.body);
   if (!service) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Service not found');
   }
@@ -33,10 +36,11 @@ const updateServiceById = catchAsync(async (req, res) => {
 
 const deleteServiceById = catchAsync(async (req, res) => {
   await serviceService.deleteServiceById(req.params.serviceId);
-  res.status(httpStatus.NO_CONTENT).send();
+  res.status(httpStatus.OK).send('Đã xóa thành công');
 });
 
 const getSpecialists = catchAsync(async (req, res) => {
+  console.log('getSpecialists')
   const specialists = await serviceService.getSpecialists() ;
   res.send(specialists);
 });

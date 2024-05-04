@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
+const { Service } = require('.');
 
 const orderSchema = mongoose.Schema(
   {
@@ -29,6 +30,18 @@ const orderSchema = mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    OrderService: [
+      {
+        service: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Service',
+        },
+        quantity: {
+          type: Number,
+          default: 1, 
+        },
+      },
+    ],
   },
   {
     timestamps: true,
