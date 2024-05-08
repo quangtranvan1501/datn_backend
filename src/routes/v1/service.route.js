@@ -6,12 +6,12 @@ const auth = require('../../middlewares/auth');
 
 const router = express.Router();
 
-router.route('/specialist').get(serviceController.getSpecialists);
+router.route('/specialist/:specialistId').get(validate(serviceValidation.getServicesBySpecialistId), serviceController.getServicesBySpecialistId);
 
 router
   .route('/')
   .post(auth(), validate(serviceValidation.createService), serviceController.createService)
-  .get(serviceController.getServices);
+  .get(serviceController.getAllServices);
 
 router
     .route('/:serviceId')

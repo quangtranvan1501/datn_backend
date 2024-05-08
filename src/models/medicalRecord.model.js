@@ -3,18 +3,13 @@ const { toJSON, paginate } = require('./plugins');
 
 const medicalRecordSchema = mongoose.Schema(
   {
-    idRecord: {
-      type: Number,
-      required: true,
-      unique: true,
+    patient: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
     },
-    idPatient: {
-      type: Number,
-      required: true,
-    },
-    idDoctor: {
-      type: Number,
-      required: true,
+    doctor: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
     },
     diagnose: {
       type: String,

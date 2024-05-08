@@ -10,11 +10,21 @@ const createService = catchAsync(async (req, res) => {
   res.status(httpStatus.CREATED).send(service);
 });
 
-const getServices = catchAsync(async (req, res) => {
-  const services = await Service.find();
+const getAllServices = catchAsync(async (req, res) => {
+
+  const services = await Service.find().populate('specialist');
   res.send({
     data: services,
     totalResult: services.length
+  });
+});
+
+const getServicesBySpecialistId = catchAsync(async (req, res) => {
+  console.log(req.params.specialistId)
+  const result = await serviceService.getServicesBySpecialistId(req.params.specialistId);
+  res.send({
+    data: result,
+    totalResult: result.length
   });
 });
 
@@ -47,8 +57,9 @@ const getSpecialists = catchAsync(async (req, res) => {
 
 module.exports = {
   createService,
-  getServices,
+  getAllServices,
   getServiceById,
+  getServicesBySpecialistId,
   updateServiceById,
   deleteServiceById,
   getSpecialists

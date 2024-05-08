@@ -30,13 +30,17 @@ const queryServices = async (filter, options) => {
   return services;
 };
 
+const getServicesBySpecialistId = async (specialistId) => {
+  return Service.find({specialist: specialistId}).populate('specialist');
+}
+
 /**
  * Get service by id
  * @param {ObjectId} idService
  * @returns {Promise<Service>}
  */
 const getServiceById = async (idService) => {
-  return Service.findById(idService);
+  return Service.findById(idService).populate('specialist');
 };
 
 /**
@@ -85,6 +89,7 @@ module.exports = {
   createService,
   queryServices,
   getServiceById,
+  getServicesBySpecialistId,
   updateServiceById,
   deleteServiceById,
   getSpecialists

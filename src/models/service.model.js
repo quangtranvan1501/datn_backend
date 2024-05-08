@@ -21,7 +21,8 @@ const serviceSchema = mongoose.Schema(
       required: true,
     },
     specialist: {
-      type: String,
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'Specialist',
       required: true,
     },
   },

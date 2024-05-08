@@ -4,14 +4,9 @@ const { Service } = require('.');
 
 const orderSchema = mongoose.Schema(
   {
-    idOrder: {
-      type: Number,
-      required: true,
-      unique: true,
-    },
-    idPatient: {
-      type: Number,
-      required: true,
+    patient: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
     },
     totalAmount: {
       type: Number,
@@ -30,7 +25,7 @@ const orderSchema = mongoose.Schema(
       type: Date,
       default: Date.now,
     },
-    OrderService: [
+    orderService: [
       {
         service: {
           type: mongoose.Schema.Types.ObjectId,

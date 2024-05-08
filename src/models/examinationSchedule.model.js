@@ -4,22 +4,17 @@ const e = require('express');
 
 const examinationScheduleSchema = mongoose.Schema(
   {
-    idSchedule: {
-      type: Number,
-      required: true,
-      unique: true,
+    patient: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
     },
-    idPatient: {
-      type: Number,
-      required: true,
+    doctor: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
     },
-    idDoctor: {
-      type: Number,
-      required: true,
-    },
-    idOrder: {
-      type: Number,
-      required: true,
+    order: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Order',
     },
     day: {
       type: Date,

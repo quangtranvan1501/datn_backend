@@ -10,6 +10,12 @@ const createService = {
   }),
 };
 
+const getServicesBySpecialistId = {
+  params: Joi.object().keys({
+    specialistId: Joi.string().custom(objectId),
+  }),
+};
+
 const getServiceById = {
   params: Joi.object().keys({
     serviceId: Joi.string().custom(objectId),
@@ -39,4 +45,5 @@ module.exports = {
   getServiceById,
   updateService,
   deleteService,
+  getServicesBySpecialistId
 };
