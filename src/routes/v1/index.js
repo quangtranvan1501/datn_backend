@@ -40,6 +40,10 @@ const defaultRoutes = [
     path: "/examinationSchedules",
     route: examinationScheduleRoute,
   },
+  {
+    path: '/docs',
+    route: docsRoute,
+  },
 ];
 
 const devRoutes = [
