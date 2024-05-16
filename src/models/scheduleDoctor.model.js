@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { generateSnowflakeId } = require('../utils/snowflake');
+const { toJSON, paginate } = require('./plugins');
 const Schema = mongoose.Schema;
 
 const scheduleDoctor = new Schema({
