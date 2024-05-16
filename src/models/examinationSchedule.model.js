@@ -1,9 +1,15 @@
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
 const e = require('express');
+const { generateSnowflakeId } = require('../utils/snowflake');
 
 const examinationScheduleSchema = mongoose.Schema(
   {
+    examinationScheduleId: {
+      type: String,
+      required: true,
+      default: generateSnowflakeId,
+    },
     patient: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -12,9 +18,9 @@ const examinationScheduleSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
-    order: {
+    service: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Order',
+      ref: 'Service',
     },
     day: {
       type: Date,

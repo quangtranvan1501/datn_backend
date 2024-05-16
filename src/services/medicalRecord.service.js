@@ -21,23 +21,26 @@ const createMedicalRecord = async (medicalRecordBody) => {
  * @returns {Promise<QueryResult>}
  */
 const queryMedicalRecords = async (filter, options) => {
-  const medicalRecords = await MedicalRecord.paginate(filter, options).populate('patient', 'name').populate('doctor','name');
+  const medicalRecords = await MedicalRecord.paginate(filter, {
+    ...options,
+    populate: 'patient doctor'
+  });
   return medicalRecords;
 };
 
 /**
  * Get medical record by id
- * @param {ObjectId} id
+ * @param {String} medicalRecordId
  * @returns {Promise<MedicalRecord>}
  */
-const getMedicalRecordById = async (id) => {
-  return MedicalRecord.findById(id).populate('patient', 'name').populate('doctor','name');
+const getMedicalRecordById = async (medicalRecordId) => {
+  return MedicalRecord.findOne({medicalRecordId}).populate('patient', 'name').populate('doctor','name');
   
 };
 
 /**
  * Update medical record by id
- * @param {ObjectId} medicalRecordId
+ * @param {String} medicalRecordId
  * @param {Object} updateBody
  * @returns {Promise<MedicalRecord>}
  */
@@ -53,7 +56,7 @@ const updateMedicalRecordById = async (medicalRecordId, updateBody) => {
 
 /**
  * Delete medical record by id
- * @param {ObjectId} medicalRecordId
+ * @param {String} medicalRecordId
  * @returns {Promise<MedicalRecord>}
  */
 const deleteMedicalRecordById = async (medicalRecordId) => {

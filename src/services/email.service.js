@@ -75,7 +75,7 @@ const sendResetPasswordEmail = async (to, token) => {
       </body>
     </html>
   `;
-  await sendEmail(to, subject, null, html);
+  await sendEmail(to, subject, html);
 };
 
 /**

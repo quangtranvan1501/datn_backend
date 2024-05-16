@@ -5,6 +5,8 @@ const docsRoute = require('./docs.route');
 const serviceRoute = require('./service.route');
 const specialistRoute = require('./specialist.route');
 const medicalRecordRoute = require('./medicalRecord.route');
+const orderRoute = require('./order.route');
+const examinationScheduleRoute = require('./examinationSchedule.route');
 const config = require('../../config/config');
 
 const router = express.Router();
@@ -19,17 +21,25 @@ const defaultRoutes = [
     route: userRoute,
   },
   {
-    path:"/services",
+    path: "/services",
     route: serviceRoute,
   },
   {
-    path:"/specialist",
+    path: "/specialist",
     route: specialistRoute,
   },
   {
-    path:"/medicalRecords",
+    path: "/medicalRecords",
     route: medicalRecordRoute,
-  }
+  },
+  {
+    path: "/orders",
+    route: orderRoute,
+  },
+  {
+    path: "/examinationSchedules",
+    route: examinationScheduleRoute,
+  },
 ];
 
 const devRoutes = [
@@ -45,10 +55,10 @@ defaultRoutes.forEach((route) => {
 });
 
 /* istanbul ignore next */
-if (config.env === 'development') {
-  devRoutes.forEach((route) => {
-    router.use(route.path, route.route);
-  });
-}
+// if (config.env === 'development') {
+devRoutes.forEach((route) => {
+  router.use(route.path, route.route);
+});
+// }
 
 module.exports = router;

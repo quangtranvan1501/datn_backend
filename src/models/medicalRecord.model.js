@@ -1,8 +1,14 @@
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
+const { generateSnowflakeId } = require('../utils/snowflake');
 
 const medicalRecordSchema = mongoose.Schema(
   {
+    medicalRecordId: {
+      type: String,
+      required: true,
+      default: generateSnowflakeId,
+    },
     patient: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',

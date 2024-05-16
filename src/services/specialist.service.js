@@ -32,16 +32,16 @@ const querySpecialists = async (filter, options) => {
 
 /**
  * Get specialist by id
- * @param {Number} specialistId
+ * @param {string} specialistId
  * @returns {Promise<Specialist>}
  */
 const getSpecialistById = async (specialistId) => {
-  return Specialist.findById(specialistId);
+  return Specialist.findOne({specialistId});
 };
 
 /**
  * Update specialist by id
- * @param {Number} specialistId
+ * @param {string} specialistId
  * @param {Object} updateBody
  * @returns {Promise<Specialist>}
  */
@@ -57,7 +57,7 @@ const updateSpecialistById = async (specialistId, updateBody) => {
 
 /**
  * Delete specialist by id
- * @param {Number} specialistId
+ * @param {string} specialistId
  * @returns {Promise<Specialist>}
  */
 const deleteSpecialistById = async (specialistId) => {

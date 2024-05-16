@@ -3,9 +3,15 @@ const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const { toJSON, paginate } = require('./plugins');
 const { roles } = require('../config/roles');
+const { generateSnowflakeId } = require('../utils/snowflake');
 
 const userSchema = mongoose.Schema(
   {
+    userId:{
+      type: String,
+      required: true,
+      default: generateSnowflakeId
+    },
     username: {
       type: String,
       required: true,
@@ -83,9 +89,10 @@ const userSchema = mongoose.Schema(
       required: false
     },
     specialist:{
-      type: String,
-      trim: false,
-      required: false
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'Specialist',
+      required: false,
+      trim: false
     },
   },
   {

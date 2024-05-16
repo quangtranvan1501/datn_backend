@@ -1,16 +1,18 @@
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
+const { generateSnowflakeId } = require('../utils/snowflake');
 
 const serviceSchema = mongoose.Schema(
   {
-    // serviceId: {
-    //   type: Number,
-    //   required: false,
-    //   unique: true,
-    // },
+    serviceId: {
+      type: String,
+      default: generateSnowflakeId,
+      required: true,
+    },
     name: {
       type: String,
       required: true,
+      unique: true,
     },
     unit: {
       type: String,
@@ -21,7 +23,7 @@ const serviceSchema = mongoose.Schema(
       required: true,
     },
     specialist: {
-      type: mongoose.SchemaTypes.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'Specialist',
       required: true,
     },
@@ -30,18 +32,6 @@ const serviceSchema = mongoose.Schema(
     timestamps: true,
   }
 );
-
-// serviceSchema.pre('save', async function (next) {
-//   const service = this;
-//   if (!service.isNew) return next(); 
-//   try {
-//     const lastService = await mongoose.model('Service').findOne({}, {}, { sort: { 'serviceId': -1 } }); 
-//     service.serviceId = lastService ? lastService.serviceId + 1 : 1; 
-//     next();
-//   } catch (error) {
-//     next(error);
-//   }
-// });
 
 serviceSchema.plugin(toJSON);
 serviceSchema.plugin(paginate);

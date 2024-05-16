@@ -1,9 +1,15 @@
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
 const { Service } = require('.');
+const { generateSnowflakeId } = require('../utils/snowflake');
 
 const orderSchema = mongoose.Schema(
   {
+    orderId:{
+      type: String,
+      required: true,
+      default: generateSnowflakeId
+    },
     patient: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',

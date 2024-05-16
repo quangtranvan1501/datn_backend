@@ -3,6 +3,7 @@ const Specialist = require('../models/specialist.model');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const { specialistService } = require('../services');
+const pick = require('../utils/pick');
 
 const createSpecialist = catchAsync(async (req, res) => {
     const specialist = await specialistService.createSpecialist(req.body);
@@ -14,12 +15,13 @@ const createSpecialist = catchAsync(async (req, res) => {
 });
 
 const getSpecialists = catchAsync(async (req, res) => {
-    const specialists = await specialistService.querySpecialists(req.query);
+    const filter = pick(req.query, ['name']);
+    const options = pick(req.query, ['sortBy', 'limit', 'page']);
+    const specialists = await specialistService.querySpecialists(filter, options);
     res.status(httpStatus.OK).send({
         code: httpStatus.OK,
         message: 'Lấy danh sách khoa thành công',
         data: specialists,
-        totalResult: specialists.length
     });
 });
 

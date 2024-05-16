@@ -12,8 +12,22 @@ const createUser = {
     phoneNumber: Joi.string().required(),
     address: Joi.string().required(),
     birthday: Joi.date().required(),
-    positon: Joi.string(),
-    specialist: Joi.string(),
+  }),
+};
+
+const createDoctor = {
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required().custom(password),
+    name: Joi.string().required(),
+    username: Joi.string().required(),
+    gender: Joi.string().required().valid('Male', 'Female', 'Other'), 
+    role: Joi.string().required().valid('user', 'admin', 'doctor'),
+    phoneNumber: Joi.string().required(),
+    address: Joi.string().required(),
+    birthday: Joi.date().required(),
+    positon: Joi.string().required(),
+    specialist: Joi.string().required().custom(objectId),
   }),
 };
 
@@ -61,6 +75,7 @@ const deleteUser = {
 
 module.exports = {
   createUser,
+  createDoctor,
   getUsers,
   getUser,
   updateUser,

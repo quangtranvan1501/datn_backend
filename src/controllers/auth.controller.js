@@ -5,7 +5,9 @@ const { tokenTypes } = require('../config/tokens');
 const { data } = require('../config/logger');
 
 const register = catchAsync(async (req, res) => {
-  const user = await userService.createUser(req.body);
+  const stringifiedBody = convertObjectValuesToString(req.body);
+  console.log(stringifiedBody);
+  const user = await userService.createUser(stringifiedBody);
   const tokens = await tokenService.generateAuthTokens(user);
   const verifyEmailToken = await tokenService.generateVerifyEmailToken(user);
   await emailService.sendVerificationEmail(user.email, verifyEmailToken);
@@ -90,6 +92,18 @@ const verifyEmail = catchAsync(async (req, res) => {
   await authService.verifyEmail(req.query.token);
   res.status(httpStatus.NO_CONTENT).send();
 });
+
+function convertObjectValuesToString(obj) {
+  const newObj = {};
+  for (const key in obj) {
+    if (typeof obj[key] != 'string') {
+      newObj[key] = obj[key].toString();
+    } else {
+      newObj[key] = obj[key];
+    }
+  }
+  return newObj;
+}
 
 module.exports = {
   register,

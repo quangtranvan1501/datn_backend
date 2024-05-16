@@ -9,22 +9,22 @@ const createSpecialist = {
 
 const getSpecialistById = {
   params: Joi.object().keys({
-    specialistId: Joi.string().custom(objectId),
+    specialistId: Joi.string(),
   }),
 };
 
 const updateSpecialist = {
   params: Joi.object().keys({
-    specialistId: Joi.required().custom(objectId),
+    specialistId: Joi.required(),
   }),
   body: Joi.object().keys({
-    name: Joi.string().required(),
+    name: Joi.string(),
   }).min(1),
 };
 
 const deleteSpecialist = {
   params: Joi.object().keys({
-    specialistId: Joi.string().custom(objectId),
+    specialistId: Joi.string(),
   }),
 };
 

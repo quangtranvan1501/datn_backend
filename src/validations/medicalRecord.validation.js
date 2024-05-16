@@ -23,13 +23,13 @@ const getMedicalRecords = {
 
 const getMedicalRecordById = {
   params: Joi.object().keys({
-    medicalRecordId: Joi.string().custom(objectId),
+    medicalRecordId: Joi.string().required(),
   }),
 };
 
 const updateMedicalRecord = {
   params: Joi.object().keys({
-    medicalRecordId: Joi.required().custom(objectId),
+    medicalRecordId: Joi.string().required(),
   }),
   body: Joi.object()
     .keys({
@@ -44,7 +44,7 @@ const updateMedicalRecord = {
 
 const deleteMedicalRecord = {
   params: Joi.object().keys({
-    medicalRecordId: Joi.string().custom(objectId),
+    medicalRecordId: Joi.string(),
   }),
 };
 

@@ -3,6 +3,7 @@ const Service = require('../models/service.model');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const { serviceService } = require('../services');
+const pick = require('../utils/pick');
 
 const createService = catchAsync(async (req, res) => {
   console.log(req.body)
@@ -15,13 +16,16 @@ const createService = catchAsync(async (req, res) => {
 });
 
 const getAllServices = catchAsync(async (req, res) => {
+  const filter = pick(req.query, ['name']);
+  const options = pick(req.query, ['sortBy', 'limit', 'page']);
 
-  const services = await Service.find().populate('specialist');
+  const services = await serviceService.queryServices(filter, options);
+
+  // const services = await Service.find().populate('specialist');
   res.status(httpStatus.OK).send({
     code: httpStatus.OK,
     message: 'Lấy danh sách dịch vụ thành công',
     data: services,
-    totalResult: services.length
   });
 });
 
@@ -68,11 +72,6 @@ const deleteServiceById = catchAsync(async (req, res) => {
   });
 });
 
-const getSpecialists = catchAsync(async (req, res) => {
-  console.log('getSpecialists')
-  const specialists = await serviceService.getSpecialists() ;
-  res.send(specialists);
-});
 
 module.exports = {
   createService,
@@ -81,5 +80,4 @@ module.exports = {
   getServicesBySpecialistId,
   updateServiceById,
   deleteServiceById,
-  getSpecialists
 };

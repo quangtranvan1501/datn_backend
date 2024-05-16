@@ -12,7 +12,14 @@ const createUser = catchAsync(async (req, res) => {
     data: user
   });
 });
-
+const createDoctor = catchAsync(async (req, res) => {
+  const user = await userService.createUser(req.body);
+  res.status(httpStatus.CREATED).send({
+    code: httpStatus.CREATED,
+    message: 'Tạo tài khoản thành công. Vui lòng kiểm tra email để xác thực tài khoản',
+    data: user
+  });
+});
 const getUsers = catchAsync(async (req, res) => {
   const filter = pick(req.query, ['name', 'role']);
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
@@ -57,6 +64,7 @@ const deleteUser = catchAsync(async (req, res) => {
 
 module.exports = {
   createUser,
+  createDoctor,
   getUsers,
   getUser,
   updateUser,

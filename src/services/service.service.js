@@ -26,7 +26,10 @@ const createService = async (serviceBody) => {
  * @returns {Promise<QueryResult>}
  */
 const queryServices = async (filter, options) => {
-  const services = await Service.paginate(filter, options);
+  const services = await Service.paginate(filter, {
+    ...options,
+    populate: 'specialist'
+  });
   return services;
 };
 
@@ -36,21 +39,21 @@ const getServicesBySpecialistId = async (specialistId) => {
 
 /**
  * Get service by id
- * @param {ObjectId} idService
+ * @param {String} serviceId
  * @returns {Promise<Service>}
  */
-const getServiceById = async (idService) => {
-  return Service.findById(idService).populate('specialist');
+const getServiceById = async (serviceId) => {
+  return Service.findOne({serviceId}).populate('specialist');
 };
 
 /**
  * Update service by id
- * @param {ObjectId} idService
+ * @param {String} serviceId
  * @param {Object} updateBody
  * @returns {Promise<Service>}
  */
-const updateServiceById = async (idService, updateBody) => {
-  const service = await getServiceById(idService);
+const updateServiceById = async (serviceId, updateBody) => {
+  const service = await getServiceById(serviceId);
   if (!service) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Service not found');
   }
@@ -61,11 +64,11 @@ const updateServiceById = async (idService, updateBody) => {
 
 /**
  * Delete service by id
- * @param {ObjectId} idService
+ * @param {String} serviceId
  * @returns {Promise<Service>}
  */
-const deleteServiceById = async (idService) => {
-  const service = await getServiceById(idService);
+const deleteServiceById = async (serviceId) => {
+  const service = await getServiceById(serviceId);
   if (!service) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Service not found');
   }
@@ -77,14 +80,6 @@ const deleteServiceById = async (idService) => {
  * Get list of specialists
  * @returns {Promise<Specialists<string>>} List of specialists
  */
-const getSpecialists = async () => {
-    try {
-      const specialists = await Service.distinct('specialist');
-      return specialists;
-    } catch (error) {
-      throw new Error('Error getting specialists');
-    }
-  };
 module.exports = {
   createService,
   queryServices,
@@ -92,5 +87,4 @@ module.exports = {
   getServicesBySpecialistId,
   updateServiceById,
   deleteServiceById,
-  getSpecialists
 };

@@ -12,31 +12,31 @@ const createService = {
 
 const getServicesBySpecialistId = {
   params: Joi.object().keys({
-    specialistId: Joi.string().custom(objectId),
+    specialistId: Joi.string().required(),
   }),
 };
 
 const getServiceById = {
   params: Joi.object().keys({
-    serviceId: Joi.string().custom(objectId),
+    serviceId: Joi.string(),
   }),
 };
 
 const updateService = {
   params: Joi.object().keys({
-    serviceId: Joi.required().custom(objectId),
+    serviceId: Joi.string().required(),
   }),
   body: Joi.object().keys({
-    name: Joi.string().required(),
-    unit: Joi.string().required(),
-    price: Joi.number().required(),
-    specialist: Joi.string().required(),
+    name: Joi.string(),
+    unit: Joi.string(),
+    price: Joi.number(),
+    specialist: Joi.string(),
   }).min(1),
 };
 
 const deleteService = {
   params: Joi.object().keys({
-    serviceId: Joi.string().custom(objectId),
+    serviceId: Joi.string().required(),
   }),
 };
 
