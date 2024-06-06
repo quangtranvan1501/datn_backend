@@ -55,8 +55,8 @@ const userSchema = mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['active', 'disabled'],
-      default: 'active',
+      enum: ['1', '0'],
+      default: '1',
     },
     role: {
       type: String,
@@ -114,6 +114,12 @@ userSchema.statics.isEmailTaken = async function (email, excludeUserId) {
   const user = await this.findOne({ email, _id: { $ne: excludeUserId } });
   return !!user;
 };
+
+userSchema.statics.isEmailTaken2 = async function (email, excludeUserId) {
+  const user = await this.findOne({ email, userId: { $ne: excludeUserId } });
+  return !!user;
+};
+
 userSchema.statics.isUsername = async function (username, excludeUserId) {
   const user = await this.findOne({ username, _id: { $ne: excludeUserId } });
   return !!user;

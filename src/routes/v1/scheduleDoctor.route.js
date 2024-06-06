@@ -1,41 +1,39 @@
 const express = require('express');
 const validate = require('../../middlewares/validate');
-const serviceValidation = require('../../validations/service.validation');
-const serviceController = require('../../controllers/service.controller');
+const scheduleDoctorValidation = require('../../validations/scheduleDoctor.validation');
+const scheduleDoctorController = require('../../controllers/scheduleDoctor.controller');
 const auth = require('../../middlewares/auth');
 
 const router = express.Router();
 
-router.route('/specialist').get(validate(serviceValidation.getServicesBySpecialistId), serviceController.getServicesBySpecialistId);
-
-router.route('/search').get(validate(serviceValidation.searchService), serviceController.searchService);
+router.route('/doctor').get(auth(), validate(scheduleDoctorValidation.getScheduleDoctorByDoctorId), scheduleDoctorController.getScheduleByDoctorId);
 
 router
   .route('/')
-  .post(auth(), validate(serviceValidation.createService), serviceController.createService)
-  .get( validate(serviceValidation.getServices) , serviceController.getAllServices);
+  .post(auth(), validate(scheduleDoctorValidation.createScheduleDoctor), scheduleDoctorController.createScheduleDoctor)
+  .get(auth('manageUsers'), validate(scheduleDoctorValidation.getScheduleDoctor) , scheduleDoctorController.getSchedules);
 
 router
-    .route('/:serviceId')
-    .get(auth(), validate(serviceValidation.getServiceById), serviceController.getServiceById)
-    .patch(auth('manageUsers'), validate(serviceValidation.updateService), serviceController.updateServiceById)
-    .delete(auth('manageUsers'), validate(serviceValidation.deleteService), serviceController.deleteServiceById);
+  .route('/:scheduleDoctorId')
+  .get(auth(), validate(scheduleDoctorValidation.getScheduleDoctorById), scheduleDoctorController.getScheduleById)
+  .patch(auth('manageUsers'), validate(scheduleDoctorValidation.updateScheduleDoctor), scheduleDoctorController.updateScheduleById)
+  .delete(auth(), validate(scheduleDoctorValidation.deleteScheduleDoctor), scheduleDoctorController.deleteScheduleById);
 
 module.exports = router;
 
 /**
  * @swagger
  * tags:
- *   name: Service
- *   description: Operations related to services
+ *   name: ScheduleDoctor
+ *   description: Operations related to doctor schedules
  */
 
 /**
  * @swagger
- * /services:
+ * /scheduleDoctors:
  *   post:
- *     summary: Create a new service
- *     tags: [Service]
+ *     summary: Create a new schedule for a doctor
+ *     tags: [ScheduleDoctor]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -43,38 +41,24 @@ module.exports = router;
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               unit:
- *                 type: string
- *               price:
- *                 type: number
- *               specialist:
- *                 type: string
- *             example:
- *               name: Medical Checkup
- *               unit: USD
- *               price: 50
- *               specialist: Dr. Smith
+ *             $ref: '#/components/schemas/ScheduleDoctor'
  *     responses:
  *       "201":
  *         description: Created
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Service'
+ *               $ref: '#/components/schemas/ScheduleDoctor'
  *       "400":
  *         $ref: '#/components/responses/BadRequest'
  */
 
 /**
  * @swagger
- * /services:
+ * /scheduleDoctors:
  *   get:
- *     summary: Get all services
- *     tags: [Service]
+ *     summary: Get all doctor schedules
+ *     tags: [ScheduleDoctor]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -96,17 +80,17 @@ module.exports = router;
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/Service'
+ *                 $ref: '#/components/schemas/ScheduleDoctor'
  *       "401":
  *         $ref: '#/components/responses/Unauthorized'
  */
 
 /**
  * @swagger
- * /services/{id}:
+ * /scheduleDoctors/{id}:
  *   get:
- *     summary: Get a service by ID
- *     tags: [Service]
+ *     summary: Get a schedule by ID
+ *     tags: [ScheduleDoctor]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -115,14 +99,14 @@ module.exports = router;
  *         required: true
  *         schema:
  *           type: string
- *         description: ID of the service
+ *         description: ID of the schedule
  *     responses:
  *       "200":
  *         description: OK
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Service'
+ *               $ref: '#/components/schemas/ScheduleDoctor'
  *       "401":
  *         $ref: '#/components/responses/Unauthorized'
  *       "404":
@@ -131,10 +115,10 @@ module.exports = router;
 
 /**
  * @swagger
- * /services/{id}:
- *   put:
- *     summary: Update a service by ID
- *     tags: [Service]
+ * /scheduleDoctors/{id}:
+ *   patch:
+ *     summary: Update a schedule by ID
+ *     tags: [ScheduleDoctor]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -143,20 +127,20 @@ module.exports = router;
  *         required: true
  *         schema:
  *           type: string
- *         description: ID of the service
+ *         description: ID of the schedule
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/ServiceUpdate'
+ *             $ref: '#/components/schemas/ScheduleDoctorUpdate'
  *     responses:
  *       "200":
  *         description: OK
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Service'
+ *               $ref: '#/components/schemas/ScheduleDoctor'
  *       "401":
  *         $ref: '#/components/responses/Unauthorized'
  *       "404":
@@ -167,10 +151,10 @@ module.exports = router;
 
 /**
  * @swagger
- * /services/{id}:
+ * /scheduleDoctors/{id}:
  *   delete:
- *     summary: Delete a service by ID
- *     tags: [Service]
+ *     summary: Delete a schedule by ID
+ *     tags: [ScheduleDoctor]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -179,7 +163,7 @@ module.exports = router;
  *         required: true
  *         schema:
  *           type: string
- *         description: ID of the service
+ *         description: ID of the schedule
  *     responses:
  *       "204":
  *         description: No content
@@ -188,4 +172,3 @@ module.exports = router;
  *       "404":
  *         $ref: '#/components/responses/NotFound'
  */
-

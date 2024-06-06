@@ -12,7 +12,19 @@ const createService = {
 
 const getServicesBySpecialistId = {
   params: Joi.object().keys({
-    specialistId: Joi.string().required(),
+    specialist: Joi.string().custom(objectId),
+    sortBy: Joi.string(),
+    limit: Joi.number().integer(),
+    page: Joi.number().integer(),
+  }),
+};
+
+const getServices = {
+  query: Joi.object().keys({
+    name: Joi.string(),
+    sortBy: Joi.string(),
+    limit: Joi.number().integer(),
+    page: Joi.number().integer(),
   }),
 };
 
@@ -40,10 +52,21 @@ const deleteService = {
   }),
 };
 
+const searchService = {
+  query: Joi.object().keys({
+    searchText: Joi.string(),
+    sortBy: Joi.string(),
+    limit: Joi.number().integer(),
+    page: Joi.number().integer(),
+  }),
+};
+
 module.exports = {
   createService,
   getServiceById,
   updateService,
   deleteService,
-  getServicesBySpecialistId
+  getServicesBySpecialistId,
+  getServices,
+  searchService
 };

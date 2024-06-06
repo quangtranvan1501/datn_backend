@@ -20,6 +20,14 @@ const paginate = (schema) => {
    * @returns {Promise<QueryResult>}
    */
   schema.statics.paginate = async function (filter, options) {
+    // if (filter) {
+    //   for (const key in filter) {
+    //     if (filter.hasOwnProperty(key) && typeof filter[key] === 'String') {
+    //       filter[key] = { $regex: filter[key], $options: 'i' };
+    //     }
+    //   }
+    // }
+
     let sort = '';
     if (options.sortBy) {
       const sortingCriteria = [];

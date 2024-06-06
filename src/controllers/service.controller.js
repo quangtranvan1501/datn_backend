@@ -30,8 +30,9 @@ const getAllServices = catchAsync(async (req, res) => {
 });
 
 const getServicesBySpecialistId = catchAsync(async (req, res) => {
-  console.log(req.params.specialistId)
-  const result = await serviceService.getServicesBySpecialistId(req.params.specialistId);
+  const filter = pick(req.query, ['specialist']);
+  const options = pick(req.query, ['sortBy', 'limit', 'page']);
+  const result = await serviceService.getServicesBySpecialistId(filter, options);
   res.status(httpStatus.OK).send({
     code: httpStatus.OK,
     message: 'Lấy danh sách dịch vụ thành công',
@@ -72,6 +73,21 @@ const deleteServiceById = catchAsync(async (req, res) => {
   });
 });
 
+const searchService = catchAsync(async (req, res) => {
+  const searchText = req.query.searchText || '';
+  const options = {
+    sortBy: req.query.sortBy,
+    limit: parseInt(req.query.limit, 10) || 10,
+    page: parseInt(req.query.page, 10) || 1,
+  };
+
+  const result = await serviceService.searchService(searchText, options);
+  res.status(httpStatus.OK).send({
+    code: httpStatus.OK,
+    message: 'Tìm kiếm tài khoản thành công',
+    data: result
+  });
+})
 
 module.exports = {
   createService,
@@ -80,4 +96,5 @@ module.exports = {
   getServicesBySpecialistId,
   updateServiceById,
   deleteServiceById,
+  searchService
 };

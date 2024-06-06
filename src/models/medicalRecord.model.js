@@ -17,9 +17,21 @@ const medicalRecordSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
+    service:{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Service',
+    },
     diagnose: {
       type: String,
       required: true,
+    },
+    symptom: {
+      type: String,
+      required: true,
+    },
+    prescription:{
+      type: String,
+      required: false,
     },
     testResults: {
       type: String,
@@ -32,6 +44,7 @@ const medicalRecordSchema = mongoose.Schema(
     day: {
       type: Date,
       required: true,
+      default: Date.now,
     },
   },
   {

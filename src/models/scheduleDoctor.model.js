@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const { generateSnowflakeId } = require('../utils/snowflake');
 const { toJSON, paginate } = require('./plugins');
+const { unix } = require('moment');
 const Schema = mongoose.Schema;
 
 const scheduleDoctor = new Schema({
@@ -11,11 +12,12 @@ const scheduleDoctor = new Schema({
     },
     doctorId: { 
         type: Schema.Types.ObjectId, 
-        ref: 'Doctor' 
+        ref: 'User' 
     },
     day: { 
         type: Date, 
-        required: true 
+        required: true,
+        unique: true,
     },
     startTime: { 
         type: String, 
@@ -36,7 +38,13 @@ const scheduleDoctor = new Schema({
             },
             message: props => `${props.value} không đúng định dạng hh:mm!`
         }
-    } 
+    },
+    status:{
+        type: String,
+        enum: ['1', '0','-1'],
+        default: '0',
+
+    }
 });
 
 scheduleDoctor.plugin(toJSON);

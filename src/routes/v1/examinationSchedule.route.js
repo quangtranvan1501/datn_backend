@@ -6,16 +6,30 @@ const auth = require('../../middlewares/auth');
 
 const router = express.Router();
 
+router.route('/doctor/day').post(auth(), validate(examinationScheduleValidation.getExaminationScheduleByDay), examinationScheduleController.getExaminationScheduleByDay);
+
+router.route('/user/:userId').get(auth(), validate(examinationScheduleValidation.getExaminationScheduleByUserId), examinationScheduleController.getExaminationScheduleByUserId);
+
+router.route('/doctor/:doctorId').get(auth(), validate(examinationScheduleValidation.getExaminationSchedulesByDoctorId), examinationScheduleController.getExaminationSchedulesByDoctorId);
+
+
+router.route('/doctor/schedule-days/:doctorId').get(auth(), validate(examinationScheduleValidation.getDoctorScheduleDays), examinationScheduleController.getDoctorScheduleDays);
+
+
+router
+    .route('/checkDoctorShedule')
+    .post(auth(), validate(examinationScheduleValidation.checkDoctorShedule), examinationScheduleController.checkDoctorShedule);
+
 router
     .route('/')
     .post(auth(), validate(examinationScheduleValidation.createExaminationSchedule), examinationScheduleController.createExaminationSchedule)
-    .get(examinationScheduleController.getExaminationSchedules);
+    .get(auth('manageUsers'), validate(examinationScheduleValidation.getExaminationSchedule), examinationScheduleController.getExaminationSchedules);
 
 router
     .route('/:examinationScheduleId')
     .get(auth(), validate(examinationScheduleValidation.getExaminationScheduleById), examinationScheduleController.getExaminationScheduleById)
     .patch(auth('manageUsers'), validate(examinationScheduleValidation.updateExaminationSchedule), examinationScheduleController.updateExaminationScheduleById)
-    .delete(auth('manageUsers'), validate(examinationScheduleValidation.deleteExaminationSchedule), examinationScheduleController.deleteExaminationScheduleById);
+    .delete(auth(), validate(examinationScheduleValidation.deleteExaminationSchedule), examinationScheduleController.deleteExaminationScheduleById);
 
 module.exports = router;
 

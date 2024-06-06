@@ -14,7 +14,7 @@ const createOrder = catchAsync(async (req, res) => {
 });
 
 const getOrders = catchAsync(async (req, res) => {
-  const filter = pick(req.query, ['status']); // Assuming you might want to filter orders by status
+  const filter = pick(req.query, ['status', 'orderDate']); // Assuming you might want to filter orders by status
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const result = await orderService.queryOrders(filter, options);
   res.status(httpStatus.OK).send({
@@ -53,10 +53,20 @@ const deleteOrderById = catchAsync(async (req, res) => {
   });
 });
 
+const getOrdersByUserId = catchAsync(async (req, res) => {
+  const orders = await orderService.getOrdersByUserId(req.params.userId);
+  res.status(httpStatus.OK).send({
+    code: httpStatus.OK,
+    message: 'Lấy danh sách đơn hàng thành công',
+    data: orders
+  });
+});
+
 module.exports = {
   createOrder,
   getOrders,
   getOrderById,
   updateOrderById,
-  deleteOrderById
+  deleteOrderById,
+  getOrdersByUserId
 };

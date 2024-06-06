@@ -7,6 +7,8 @@ const specialistRoute = require('./specialist.route');
 const medicalRecordRoute = require('./medicalRecord.route');
 const orderRoute = require('./order.route');
 const examinationScheduleRoute = require('./examinationSchedule.route');
+const scheduleDoctorRoute = require('./scheduleDoctor.route');
+const managerRoute = require('./manager.route');
 const config = require('../../config/config');
 
 const router = express.Router();
@@ -41,9 +43,17 @@ const defaultRoutes = [
     route: examinationScheduleRoute,
   },
   {
+    path: "/scheduleDoctors",
+    route: scheduleDoctorRoute,
+  },
+  {
     path: '/docs',
     route: docsRoute,
   },
+  {
+    path: '/manager',
+    route: managerRoute,
+  }
 ];
 
 const devRoutes = [

@@ -13,6 +13,8 @@ const { authLimiter } = require('./middlewares/rateLimiter');
 const routes = require('./routes/v1');
 const { errorConverter, errorHandler } = require('./middlewares/error');
 const ApiError = require('./utils/ApiError');
+const createWeeklySchedules = require('./utils/schedulerAuto');
+const cron = require('node-cron');
 
 const app = express();
 
@@ -63,5 +65,9 @@ app.use(errorConverter);
 
 // handle error
 app.use(errorHandler);
+
+// cron.schedule('0 16 * * *', () => {
+//   createWeeklySchedules(); 
+// });
 
 module.exports = app;

@@ -33,9 +33,56 @@ const deleteExaminationSchedule = {
   }),
 };
 
+const checkDoctorShedule = {
+  body: Joi.object().keys({
+    doctor: Joi.string().custom(objectId).required(),
+    day: Joi.date().required(),
+  }),
+};
+
+const getExaminationScheduleByUserId = {
+  params: Joi.object().keys({
+    userId: Joi.string().custom(objectId),
+  }),
+};
+
+const getExaminationSchedulesByDoctorId = {
+  params: Joi.object().keys({
+    doctorId: Joi.string().custom(objectId),
+  }),
+};
+
+const getDoctorScheduleDays = {
+  params: Joi.object().keys({
+    doctorId: Joi.string().custom(objectId),
+  }),
+};
+
+const getExaminationScheduleByDay = {
+  body: Joi.object().keys({
+    doctor: Joi.string().custom(objectId).required(),
+    day: Joi.date().required(),
+  }),
+}
+
+const getExaminationSchedule = {
+  body: Joi.object().keys({
+    day: Joi.date(),
+    sortBy: Joi.string(),
+    limit: Joi.number().integer(),
+    page: Joi.number().integer(),
+  }),
+}
+
 module.exports = {
   createExaminationSchedule,
   getExaminationScheduleById,
   updateExaminationSchedule,
   deleteExaminationSchedule,
+  checkDoctorShedule,
+  getExaminationScheduleByUserId,
+  getExaminationSchedulesByDoctorId,
+  getDoctorScheduleDays,
+  getExaminationScheduleByDay,
+  getExaminationSchedule
 };

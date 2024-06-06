@@ -14,7 +14,7 @@ const createExaminationSchedule = catchAsync(async (req, res) => {
 });
 
 const getExaminationSchedules = catchAsync(async (req, res) => {
-  const filter = pick(req.query, ['patient', 'doctor']); // Assuming you might want to filter schedules by patient or doctor
+  const filter = pick(req.query, ['day']); // Assuming you might want to filter schedules by patient or doctor
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const result = await examinationScheduleService.queryExaminationSchedules(filter, options);
   res.status(httpStatus.OK).send({
@@ -53,10 +53,63 @@ const deleteExaminationScheduleById = catchAsync(async (req, res) => {
   });
 });
 
+const checkDoctorShedule = catchAsync(async (req, res) => {
+  const { doctor, day } = req.body;
+  await examinationScheduleService.checkDoctorShedule(doctor, day);
+  res.status(httpStatus.OK).send({
+    code: httpStatus.OK,
+    message: 'Kiểm tra lịch khám bác sĩ thành công'
+  });
+})
+
+const getExaminationScheduleByUserId = catchAsync(async (req, res) => {
+  const options = pick(req.query, ['sortBy', 'limit', 'page'])
+
+  const examinationSchedules = await examinationScheduleService.getExaminationSchedulesByPatientId(options, req.params.userId);
+  res.status(httpStatus.OK).send({
+    code: httpStatus.OK,
+    message: 'Lấy danh sách lịch khám thành công',
+    data: examinationSchedules
+  });
+})
+
+const getExaminationSchedulesByDoctorId = catchAsync(async (req, res) => {
+  const examinationSchedules = await examinationScheduleService.getExaminationSchedulesByDoctorId(req.params.doctorId);
+  res.status(httpStatus.OK).send({
+    code: httpStatus.OK,
+    message: 'Lấy danh sách lịch khám thành công',
+    data: examinationSchedules
+  });
+})
+
+const getDoctorScheduleDays = catchAsync(async (req, res) => {
+  const doctorScheduleDays = await examinationScheduleService.getDoctorScheduleDays(req.params.doctorId);
+  res.status(httpStatus.OK).send({
+    code: httpStatus.OK,
+    message: 'Lấy danh sách ngày làm việc của bác sĩ thành công',
+    data: doctorScheduleDays
+  });
+})
+
+const getExaminationScheduleByDay = catchAsync(async (rep, res) => {
+  const {doctor, day} = rep.body
+  const doctorScheduleDays = await examinationScheduleService.getExaminationScheduleByDay(doctor, day);
+  res.status(httpStatus.OK).send({
+    code: httpStatus.OK,
+    message: 'Lấy danh sách ngày làm việc của bác sĩ thành công',
+    data: doctorScheduleDays
+  });
+})
+
 module.exports = {
   createExaminationSchedule,
   getExaminationSchedules,
   getExaminationScheduleById,
   updateExaminationScheduleById,
-  deleteExaminationScheduleById
+  deleteExaminationScheduleById,
+  checkDoctorShedule,
+  getExaminationScheduleByUserId,
+  getExaminationSchedulesByDoctorId,
+  getDoctorScheduleDays,
+  getExaminationScheduleByDay
 };

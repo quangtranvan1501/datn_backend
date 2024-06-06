@@ -33,8 +33,36 @@ const queryServices = async (filter, options) => {
   return services;
 };
 
-const getServicesBySpecialistId = async (specialistId) => {
-  return Service.find({specialist: specialistId}).populate('specialist');
+const getServicesBySpecialistId = async (filter, options) => {
+  try {
+    const limit = options.limit && parseInt(options.limit, 10) > 0 ? parseInt(options.limit, 10) : 10;
+    const page = options.page && parseInt(options.page, 10) > 0 ? parseInt(options.page, 10) : 1;
+    const skip = (page - 1) * limit;
+    const sortBy = options.sortBy;
+    
+    const sortOptions = {};
+
+    if (sortBy) {
+      const [key, order] = sortBy.split(':');
+      sortOptions[key] = order === 'desc' ? -1 : 1;
+    }
+
+    const schedules = await Service.find(filter)
+      .skip(skip)
+      .limit(limit)
+      .sort(sortOptions)
+      .populate('specialist', 'name');
+    const totalResults = await Service.countDocuments(filter);
+
+    return {
+      totalResults,
+      page,
+      limit,
+      results: schedules
+    };
+  } catch (error) {
+    throw new Error(error.message);
+  }
 }
 
 /**
@@ -76,6 +104,26 @@ const deleteServiceById = async (serviceId) => {
   return service;
 };
 
+const searchService = async (searchText, options) => {
+  try {
+    let filter = {};
+    if (searchText) {
+      const searchRegex = { $regex: searchText, $options: 'i' };
+      const fields = Object.keys(Service.schema.paths).filter(key => Service.schema.paths[key].instance === 'String');
+      filter = {
+        $or: fields.map(field => ({ [field]: searchRegex })),
+      };
+    }
+
+    const result = await Service.paginate(filter, {
+      ...options,
+      populate: 'specialist'});
+    return result;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
 /**
  * Get list of specialists
  * @returns {Promise<Specialists<string>>} List of specialists
@@ -87,4 +135,5 @@ module.exports = {
   getServicesBySpecialistId,
   updateServiceById,
   deleteServiceById,
+  searchService
 };

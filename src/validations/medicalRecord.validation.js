@@ -5,10 +5,13 @@ const createMedicalRecord = {
   body: Joi.object().keys({
     patient: Joi.string().custom(objectId).required(),
     doctor: Joi.string().custom(objectId).required(),
+    service: Joi.string().custom(objectId).required(),
     diagnose: Joi.string().required(),
+    symptom: Joi.string().required(),
+    prescription: Joi.string(),
     testResults: Joi.string().required(),
     note: Joi.string().required(),
-    day: Joi.date().required(),
+    day: Joi.date(),
   }),
 };
 
@@ -33,9 +36,10 @@ const updateMedicalRecord = {
   }),
   body: Joi.object()
     .keys({
-      doctor: Joi.string().custom(objectId),
       diagnose: Joi.string(),
       testResults: Joi.string(),
+      symptom: Joi.string(),
+      prescription: Joi.string(),
       note: Joi.string(),
       day: Joi.date(),
     })
@@ -48,10 +52,17 @@ const deleteMedicalRecord = {
   }),
 };
 
+const getMedicalRecordByDoctorId = {
+  params: Joi.object().keys({
+    doctorId: Joi.string().custom(objectId).required(),
+  }),
+};
+
 module.exports = {
   createMedicalRecord,
   getMedicalRecords,
   getMedicalRecordById,
   updateMedicalRecord,
   deleteMedicalRecord,
+  getMedicalRecordByDoctorId
 };

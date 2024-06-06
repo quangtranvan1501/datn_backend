@@ -1,5 +1,6 @@
 const Joi = require('joi');
 const { password, objectId } = require('./custom.validation');
+const { email } = require('../config/config');
 
 const createUser = {
   body: Joi.object().keys({
@@ -23,7 +24,13 @@ const createDoctor = {
     username: Joi.string().required(),
     gender: Joi.string().required().valid('Male', 'Female', 'Other'), 
     role: Joi.string().required().valid('user', 'admin', 'doctor'),
-    phoneNumber: Joi.string().required(),
+    phoneNumber: Joi.custom((value) => {
+      if (typeof value !== 'string') {
+        const stringValue = '0' + String(value);
+        return stringValue;
+      }
+      return value;
+    }).required(),
     address: Joi.string().required(),
     birthday: Joi.date().required(),
     positon: Joi.string().required(),
@@ -41,15 +48,39 @@ const getUsers = {
   }),
 };
 
+const searchUser = {
+  query: Joi.object().keys({
+    searchText: Joi.string(),
+    sortBy: Joi.string(),
+    limit: Joi.number().integer(),
+    page: Joi.number().integer(),
+  }),
+};
+
+const searchDoctor = {
+  query: Joi.object().keys({
+    searchText: Joi.string(),
+    sortBy: Joi.string(),
+    limit: Joi.number().integer(),
+    page: Joi.number().integer(),
+  }),
+};
+
 const getUser = {
   params: Joi.object().keys({
-    userId: Joi.string().custom(objectId),
+    userId: Joi.string().required(),
+  }),
+};
+
+const getPatient= {
+  params: Joi.object().keys({
+    userId: Joi.string().required(),
   }),
 };
 
 const updateUser = {
   params: Joi.object().keys({
-    userId: Joi.required().custom(objectId),
+    userId: Joi.string().required(),
   }),
   body: Joi.object()
     .keys({
@@ -69,7 +100,13 @@ const updateUser = {
 
 const deleteUser = {
   params: Joi.object().keys({
-    userId: Joi.string().custom(objectId),
+    userId: Joi.string().required(),
+  }),
+};
+
+const getDoctorBySpecialistId = {
+  params: Joi.object().keys({
+    specialistId: Joi.string().required(),
   }),
 };
 
@@ -80,4 +117,8 @@ module.exports = {
   getUser,
   updateUser,
   deleteUser,
+  getDoctorBySpecialistId,
+  getPatient,
+  searchUser,
+  searchDoctor
 };

@@ -31,8 +31,40 @@ const getUsers = catchAsync(async (req, res) => {
   });
 });
 
+const searchUser = catchAsync(async (req, res) => {
+  const searchText = req.query.searchText || '';
+    const options = {
+      sortBy: req.query.sortBy,
+      limit: parseInt(req.query.limit, 10) || 10,
+      page: parseInt(req.query.page, 10) || 1,
+    };
+
+    const result = await userService.searchUser(searchText, options);
+  res.status(httpStatus.OK).send({
+    code: httpStatus.OK,
+    message: 'Tìm kiếm tài khoản thành công',
+    data: result
+  });
+})
+
+const searchDoctor = catchAsync(async (req, res) => {
+  const searchText = req.query.searchText || '';
+    const options = {
+      sortBy: req.query.sortBy,
+      limit: parseInt(req.query.limit, 10) || 10,
+      page: parseInt(req.query.page, 10) || 1,
+    };
+
+    const result = await userService.searchDoctor(searchText, options);
+  res.status(httpStatus.OK).send({
+    code: httpStatus.OK,
+    message: 'Tìm kiếm bác sỹ thành công',
+    data: result
+  });
+})
+
 const getUser = catchAsync(async (req, res) => {
-  const user = await userService.getUserById(req.params.userId);
+  const user = await userService.getUserByUserId(req.params.userId);
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
@@ -62,6 +94,24 @@ const deleteUser = catchAsync(async (req, res) => {
   });
 });
 
+const getDoctorBySpecialistId = catchAsync(async (req, res) => {
+  const result = await userService.getDoctorBySpecialistId(req.params.specialistId);
+  res.status(httpStatus.OK).send({
+    code: httpStatus.OK,
+    message: 'Lấy danh sách bác sĩ thành công',
+    data: result
+  });
+})
+
+const getPatient = catchAsync(async (req, res) => {
+  const result = await userService.getPatient(req.params.userId);
+  res.status(httpStatus.OK).send({
+    code: httpStatus.OK,
+    message: 'Lấy danh sách bệnh nhân thành công',
+    data: result
+  });
+})
+
 module.exports = {
   createUser,
   createDoctor,
@@ -69,4 +119,8 @@ module.exports = {
   getUser,
   updateUser,
   deleteUser,
+  getDoctorBySpecialistId,
+  getPatient,
+  searchUser,
+  searchDoctor
 };

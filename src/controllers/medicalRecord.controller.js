@@ -52,9 +52,18 @@ const updateMedicalRecordById = catchAsync(async (req, res) => {
 
 const deleteMedicalRecordById = catchAsync(async (req, res) => {
   await medicalRecordService.deleteMedicalRecordById(req.params.medicalRecordId);
-  res.status(httpStatus.NO_CONTENT).send({
-    code: httpStatus.NO_CONTENT,
+  res.status(httpStatus.OK).send({
+    code: httpStatus.OK,
     message: 'Xóa hồ sơ bệnh án thành công'
+  });
+});
+
+const getMedicalRecordByDoctorId = catchAsync(async (req, res) => {
+  const medicalRecords = await medicalRecordService.getMedicalRecordByDoctorId(req.params.doctorId);
+  res.status(httpStatus.OK).send({
+    code: httpStatus.OK,
+    message: 'Lấy danh sách hồ sơ bệnh án theo bác sĩ thành công',
+    data: medicalRecords
   });
 });
 
@@ -64,4 +73,5 @@ module.exports = {
   getMedicalRecordById,
   updateMedicalRecordById,
   deleteMedicalRecordById,
+  getMedicalRecordByDoctorId
 };

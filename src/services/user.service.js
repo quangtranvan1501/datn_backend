@@ -32,6 +32,51 @@ const queryUsers = async (filter, options) => {
   return users;
 };
 
+const getAllUsers = async (role) => {
+  try {
+    const users = await User.find({ role });
+    return users;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+const searchUser = async (searchText, options) => {
+  try {
+    let filter = {};
+    if (searchText) {
+      const searchRegex = { $regex: searchText, $options: 'i' };
+      const fields = Object.keys(User.schema.paths).filter(key => User.schema.paths[key].instance === 'String');
+      filter = {
+        $or: fields.map(field => ({ [field]: searchRegex })),
+      };
+    }
+
+    const result = await User.paginate(filter, options);
+    return result;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
+const searchDoctor = async (searchText, options) => {
+  try {
+    let filter = {};
+    if (searchText) {
+      const searchRegex = { $regex: searchText, $options: 'i' };
+      const fields = Object.keys(User.schema.paths).filter(key => User.schema.paths[key].instance === 'String');
+      filter = {
+        $or: fields.map(field => ({ [field]: searchRegex })),
+        role: 'doctor'
+      };
+    }
+
+    const result = await User.paginate(filter, options);
+    return result;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
 /**
  * Get user by id
  * @param {ObjectId} id
@@ -69,6 +114,18 @@ const getUserByUsername = async (username) => {
   return User.findOne({ username });
 };
 
+const getUserByUserId = async (userId) => {
+  return User
+    .findOne({ userId })
+    .populate('specialist');
+}
+
+const getPatient = async (userId) => {
+  return User
+    .findOne({ userId })
+    .select('id userId name gender birthday address')
+}
+
 /**
  * Update user by id
  * @param {ObjectId} userId
@@ -88,11 +145,11 @@ const updateUserById = async (userId, updateBody) => {
   return user;
 };
 
-const updateUserByEmail = async (email, updateBody) => { 
+const updateUserByEmail = async (email, updateBody) => {
   const user = await getUserByEmail(email);
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
-  } 
+  }
   Object.assign(user, updateBody);
   await user.save();
   return user;
@@ -103,7 +160,7 @@ const updateUserByEmail = async (email, updateBody) => {
  * @returns {Promise<User>}
  */
 const deleteUserById = async (userId) => {
-  const user = await getUserById(userId);
+  const user = await getUserByUserId(userId);
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
@@ -111,14 +168,23 @@ const deleteUserById = async (userId) => {
   return user;
 };
 
+const getDoctorBySpecialistId = async (specialistId) => {
+  return User.find({ specialist: specialistId });
+}
+
 module.exports = {
   createUser,
   queryUsers,
   getUserById,
-  // getUserByUserId,
+  getUserByUserId,
   getUserByEmail,
   updateUserById,
   updateUserByEmail,
   deleteUserById,
-  getUserByUsername
+  getUserByUsername,
+  getAllUsers,
+  getDoctorBySpecialistId,
+  getPatient,
+  searchUser,
+  searchDoctor
 };

@@ -5,3 +5,5 @@ module.exports.specialistController = require('./specialist.controller');
 module.exports.medicalRecordController = require('./medicalRecord.controller');
 module.exports.orderController = require('./order.controller');
 module.exports.examinationScheduleController = require('./examinationSchedule.controller');
+module.exports.scheduleDoctorController = require('./scheduleDoctor.controller');
+module.exports.managerController = require('./manager.controller');

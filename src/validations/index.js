@@ -6,3 +6,4 @@ module.exports.medicalRecordValidation = require('./medicalRecord.validation');
 module.exports.orderValidation = require('./order.validation');
 module.exports.examinationScheduleValidation = require('./examinationSchedule.validation');
 module.exports.scheduleDoctorValidation = require('./scheduleDoctor.validation');
+module.exports.managerValidation = require('./manager.validation');

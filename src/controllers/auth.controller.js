@@ -77,7 +77,6 @@ const forgotPassword = catchAsync(async (req, res) => {
 const resetPassword = catchAsync(async (req, res) => {
   // const resetPasswordToken = await tokenService.generateResetPasswordToken(req.body.email);
   const infoToken = await tokenService.verifyToken(req.headers.authorization.split(' ')[1], tokenTypes.ACCESS);
-  console.log(infoToken.sub)
   await authService.resetPassword(infoToken.sub, req.body.currentPassword , req.body.newPassword);
   res.status(httpStatus.OK).send({code: httpStatus.OK ,message: 'Đổi mật khẩu thành công'});
 });

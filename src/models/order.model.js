@@ -20,12 +20,12 @@ const orderSchema = mongoose.Schema(
     },
     discount: {
       type: Number,
-      required: true,
+      default: 0,
     },
     status: {
       type: String,
-      enum: ['pending', 'completed', 'cancelled'],
-      default: 'pending',
+      enum: ['0', '1', '-1'],
+      default: '0',
     },
     orderDate: {
       type: Date,
@@ -43,6 +43,10 @@ const orderSchema = mongoose.Schema(
         },
       },
     ],
+    examinationScheduleId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'ExaminationSchedule',
+    }
   },
   {
     timestamps: true,

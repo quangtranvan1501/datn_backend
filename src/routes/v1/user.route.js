@@ -8,6 +8,12 @@ const router = express.Router();
 
 router.route('/createDoctor').post(auth('manageUsers'), validate(userValidation.createDoctor), userController.createDoctor);
 
+router.route('/doctor/patient/:userId').get(auth(), validate(userValidation.getPatient), userController.getPatient);
+
+router.route('/search').get(auth('manageUsers'), validate(userValidation.searchUser), userController.searchUser);
+
+router.route('/search-doctor').get(auth('manageUsers'), validate(userValidation.searchDoctor), userController.searchDoctor);
+
 router
   .route('/')
   .post(auth('manageUsers'), validate(userValidation.createUser), userController.createUser)
@@ -16,9 +22,10 @@ router
 router
   .route('/:userId')
   .get(auth('getUsers'), validate(userValidation.getUser), userController.getUser)
-  .patch(auth('manageUsers'), validate(userValidation.updateUser), userController.updateUser)
+  .patch(auth(), validate(userValidation.updateUser), userController.updateUser)
   .delete(auth('manageUsers'), validate(userValidation.deleteUser), userController.deleteUser);
 
+router.route('/doctor/:specialistId').get(auth(), validate(userValidation.getDoctorBySpecialistId), userController.getDoctorBySpecialistId);
 module.exports = router;
 
 /**

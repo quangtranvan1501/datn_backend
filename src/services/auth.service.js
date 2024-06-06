@@ -13,8 +13,8 @@ const bcrypt = require('bcryptjs');
  */
 const loginUserWithEmailAndPassword = async (email, password) => {
   const user = await userService.getUserByEmail(email) || await userService.getUserByUsername(email);
-  if (user.status === 'disable') {
-    throw new ApiError(httpStatus.FORBIDDEN, 'Account is disabled');
+  if (user.status === '0') {
+    throw new ApiError(httpStatus.FORBIDDEN, 'Tài khoản bị vô hiệu hóa');
   }
   if (!user || !(await user.isPasswordMatch(password))) {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect email or password');

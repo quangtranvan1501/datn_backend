@@ -21,7 +21,39 @@ const createOrder = async (orderBody) => {
  * @returns {Promise<QueryResult>}
  */
 const queryOrders = async (filter, options) => {
-  const orders = await Order.paginate(filter, options);
+  const populateOptions = [
+    'patient',
+    'orderService.service',
+  ].join(',');
+  const paginationOptions = {
+    ...options,
+    populate: populateOptions,
+  };
+  if(filter.orderDate){
+    const startOfDay = new Date(filter.orderDate);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(startOfDay);
+    endOfDay.setHours(23, 59, 59, 999);
+    filter.orderDate = {
+      $gte: startOfDay,
+      $lte: endOfDay
+    }
+  }
+  const orders = await Order.paginate(filter, paginationOptions);
+  const orders2 = orders.results.map(order => {
+    const patientDetails = {
+      userId: order.patient.userId,
+      name: order.patient.name,
+      gender: order.patient.gender,
+      address: order.patient.address,
+      birthday: order.patient.birthday
+    };
+    return {
+      ...order.toObject(), 
+      patient: patientDetails,
+    };
+  });
+  orders.results = orders2;
   return orders;
 };
 
@@ -32,6 +64,10 @@ const queryOrders = async (filter, options) => {
  */
 const getOrderById = async (orderId) => {
   return Order.findOne({orderId}).populate('patient').populate('orderService.service');
+};
+
+const getOrdersByUserId = async (userId) => {
+  return Order.find({patient: userId}).populate('patient').populate('orderService.service');
 };
 
 /**
@@ -70,4 +106,5 @@ module.exports = {
   getOrderById,
   updateOrderById,
   deleteOrderById,
+  getOrdersByUserId
 };
