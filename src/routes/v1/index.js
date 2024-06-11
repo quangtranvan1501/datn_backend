@@ -9,6 +9,7 @@ const orderRoute = require('./order.route');
 const examinationScheduleRoute = require('./examinationSchedule.route');
 const scheduleDoctorRoute = require('./scheduleDoctor.route');
 const managerRoute = require('./manager.route');
+const messageRoute = require('./message.route');
 const config = require('../../config/config');
 
 const router = express.Router();
@@ -53,7 +54,12 @@ const defaultRoutes = [
   {
     path: '/manager',
     route: managerRoute,
+  },
+  {
+    path: '/message',
+    route: messageRoute,
   }
+
 ];
 
 const devRoutes = [

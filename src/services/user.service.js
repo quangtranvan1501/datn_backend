@@ -32,9 +32,17 @@ const queryUsers = async (filter, options) => {
   return users;
 };
 
-const getAllUsers = async (role) => {
+const getAllUsers = async ({ role, userIds }) => {
   try {
-    const users = await User.find({ role });
+    const query = {};
+    if (userIds && Array.isArray(userIds)) {
+      query.userId = { $in: userIds };
+    }
+    if (role) {
+      query.role = role;
+    }
+    const users = await User.find(query);
+
     return users;
   } catch (error) {
     throw new Error(error.message);
@@ -46,9 +54,9 @@ const searchUser = async (searchText, options) => {
     let filter = {};
     if (searchText) {
       const searchRegex = { $regex: searchText, $options: 'i' };
-      const fields = Object.keys(User.schema.paths).filter(key => User.schema.paths[key].instance === 'String');
+      const fields = Object.keys(User.schema.paths).filter((key) => User.schema.paths[key].instance === 'String');
       filter = {
-        $or: fields.map(field => ({ [field]: searchRegex })),
+        $or: fields.map((field) => ({ [field]: searchRegex })),
       };
     }
 
@@ -57,17 +65,17 @@ const searchUser = async (searchText, options) => {
   } catch (error) {
     throw new Error(error.message);
   }
-}
+};
 
 const searchDoctor = async (searchText, options) => {
   try {
     let filter = {};
     if (searchText) {
       const searchRegex = { $regex: searchText, $options: 'i' };
-      const fields = Object.keys(User.schema.paths).filter(key => User.schema.paths[key].instance === 'String');
+      const fields = Object.keys(User.schema.paths).filter((key) => User.schema.paths[key].instance === 'String');
       filter = {
-        $or: fields.map(field => ({ [field]: searchRegex })),
-        role: 'doctor'
+        $or: fields.map((field) => ({ [field]: searchRegex })),
+        role: 'doctor',
       };
     }
 
@@ -76,7 +84,7 @@ const searchDoctor = async (searchText, options) => {
   } catch (error) {
     throw new Error(error.message);
   }
-}
+};
 /**
  * Get user by id
  * @param {ObjectId} id
@@ -115,16 +123,12 @@ const getUserByUsername = async (username) => {
 };
 
 const getUserByUserId = async (userId) => {
-  return User
-    .findOne({ userId })
-    .populate('specialist');
-}
+  return User.findOne({ userId }).populate('specialist');
+};
 
 const getPatient = async (userId) => {
-  return User
-    .findOne({ userId })
-    .select('id userId name gender birthday address')
-}
+  return User.findOne({ userId }).select('id userId name gender birthday address');
+};
 
 /**
  * Update user by id
@@ -153,7 +157,7 @@ const updateUserByEmail = async (email, updateBody) => {
   Object.assign(user, updateBody);
   await user.save();
   return user;
-}
+};
 /**
  * Delete user by id
  * @param {ObjectId} userId
@@ -170,7 +174,11 @@ const deleteUserById = async (userId) => {
 
 const getDoctorBySpecialistId = async (specialistId) => {
   return User.find({ specialist: specialistId });
-}
+};
+
+const getTVV = async () => {
+  return User.find({ role: 'admin' }).select('id userId name');
+};
 
 module.exports = {
   createUser,
@@ -186,5 +194,6 @@ module.exports = {
   getDoctorBySpecialistId,
   getPatient,
   searchUser,
-  searchDoctor
+  searchDoctor,
+  getTVV,
 };

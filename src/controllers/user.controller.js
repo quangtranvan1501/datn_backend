@@ -112,6 +112,15 @@ const getPatient = catchAsync(async (req, res) => {
   });
 })
 
+const getTVV = catchAsync(async (req, res) => {
+  const result = await userService.getTVV();
+  res.status(httpStatus.OK).send({
+    code: httpStatus.OK,
+    message: 'Lấy danh sách tư vấn viên thành công',
+    data: result
+  });
+})
+
 module.exports = {
   createUser,
   createDoctor,
@@ -122,5 +131,6 @@ module.exports = {
   getDoctorBySpecialistId,
   getPatient,
   searchUser,
-  searchDoctor
+  searchDoctor,
+  getTVV
 };

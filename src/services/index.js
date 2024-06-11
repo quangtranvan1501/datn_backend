@@ -9,3 +9,4 @@ module.exports.orderService = require('./order.service');
 module.exports.examinationScheduleService = require('./examinationSchedule.service');
 module.exports.scheduleDoctorService = require('./scheduleDoctor.service');
 module.exports.managerService = require('./manager.service');
+module.exports.messageService = require('./message.service');

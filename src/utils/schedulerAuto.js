@@ -4,9 +4,9 @@ const schedule = require('node-schedule');
 
 // Hàm tạo lịch làm việc cho một tuần
 const createWeeklySchedules = async () => {
-  const doctors = await userService.getAllUsers('doctor'); 
+  const doctors = await userService.getAllUsers({ role: 'doctor' });
   const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-  
+
   for (let doctor of doctors) {
     for (let day of daysOfWeek) {
       const nextDay = getNextDayOfWeek(day);
@@ -43,4 +43,4 @@ const getNextDayOfWeek = (dayName) => {
   return resultDate;
 };
 schedule.scheduleJob('0 9 * * 5', createWeeklySchedules);
-module.exports = {createWeeklySchedules};
+module.exports = { createWeeklySchedules };

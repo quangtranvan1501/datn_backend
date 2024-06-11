@@ -7,4 +7,5 @@ module.exports.OrderService = require('./orderService.model');
 module.exports.MedicalRecord = require('./medicalRecord.model');
 module.exports.Specialist = require('./specialist.model');
 module.exports.ScheduleDoctor = require('./scheduleDoctor.model');
+module.exports.Message = require('./message.model');
 

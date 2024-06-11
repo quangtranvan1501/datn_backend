@@ -14,6 +14,8 @@ router.route('/search').get(auth('manageUsers'), validate(userValidation.searchU
 
 router.route('/search-doctor').get(auth('manageUsers'), validate(userValidation.searchDoctor), userController.searchDoctor);
 
+router.route('/tvv').get(auth(), userController.getTVV);
+
 router
   .route('/')
   .post(auth('manageUsers'), validate(userValidation.createUser), userController.createUser)
