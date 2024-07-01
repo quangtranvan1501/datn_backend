@@ -63,8 +63,33 @@ const getOnlineUsers = async ({ page, limit, role }) => {
   }
 };
 
+const chatbot = async (message) => {
+  const { GoogleGenerativeAI } = require('@google/generative-ai');
+  // Access your API key as an environment variable (see "Set up your API key" above)
+  const genAI = new GoogleGenerativeAI(process.env.API_KEY);
+  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+
+  const prompt1 = 'Mô tả dịch tả lợn';
+  const prompt2 = 'Viết thành văn bản liền mạch, giới hạn 150 ký tự';
+
+  const result = await model.generateContentStream([message, prompt2]);
+  // print text as it comes in
+  const chunks = [];
+  for await (const chunk of result.stream) {
+    const chunkText = chunk.text();
+    chunks.push(chunk.text());
+    console.log(chunkText);
+  }
+
+  //tôi muốn lấy ra cả đoạn text, ghép chúng thành đoạn văn hoàn chỉnh loại bỏ các ký tự đặc biệt, dấu cách thừa
+  const text = chunks.join('').replace(/\s+/g, ' ').trim();
+
+  return { message: text };
+};
+
 module.exports = {
   getMessages,
   addMessage,
   getOnlineUsers,
+  chatbot,
 };

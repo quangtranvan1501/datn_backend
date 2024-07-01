@@ -6,18 +6,24 @@ const auth = require('../../middlewares/auth');
 
 const router = express.Router();
 
-router.route('/user/:userId').get(auth(), validate(orderValidation.getOrdersByUserId), orderController.getOrdersByUserId);
+router.route('/user').get(auth(), validate(orderValidation.getOrdersByUserId), orderController.getOrdersByUserId);
+
+router.route('/user/:orderId').patch(auth(), validate(orderValidation.updateOrderByUser), orderController.updateOrderByUser);
+
+router.route('/payment/:orderId').patch(auth(), validate(orderValidation.updatePayment), orderController.updatePayment);
+
+router.route('/topServices').get(orderController.getTopServices);
 
 router
-    .route('/')
-    .post(auth(), validate(orderValidation.createOrder), orderController.createOrder)
-    .get(auth('manageUsers'), validate(orderValidation.getOrder),  orderController.getOrders);
+  .route('/')
+  .post(auth(), validate(orderValidation.createOrder), orderController.createOrder)
+  .get(auth('manageUsers'), validate(orderValidation.getOrder), orderController.getOrders);
 
 router
-    .route('/:orderId')
-    .get(auth(), validate(orderValidation.getOrderById), orderController.getOrderById)
-    .patch(auth('manageUsers'), validate(orderValidation.updateOrder), orderController.updateOrderById)
-    .delete(auth('manageUsers'), validate(orderValidation.deleteOrder), orderController.deleteOrderById);
+  .route('/:orderId')
+  .get(auth(), validate(orderValidation.getOrderById), orderController.getOrderById)
+  .patch(auth('manageUsers'), validate(orderValidation.updateOrder), orderController.updateOrderById)
+  .delete(auth(), validate(orderValidation.deleteOrder), orderController.deleteOrderById);
 
 module.exports = router;
 

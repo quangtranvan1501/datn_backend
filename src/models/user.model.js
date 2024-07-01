@@ -7,10 +7,10 @@ const { generateSnowflakeId } = require('../utils/snowflake');
 
 const userSchema = mongoose.Schema(
   {
-    userId:{
+    userId: {
       type: String,
       required: true,
-      default: generateSnowflakeId
+      default: generateSnowflakeId,
     },
     username: {
       type: String,
@@ -27,7 +27,7 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      default:"Male"
+      default: 'Male',
     },
     email: {
       type: String,
@@ -63,18 +63,18 @@ const userSchema = mongoose.Schema(
       enum: roles,
       default: 'user',
     },
-    phoneNumber:{
+    phoneNumber: {
       type: String,
       required: true,
       trim: true,
       unique: true,
     },
-    address:{
+    address: {
       type: String,
       required: true,
       trim: true,
     },
-    birthday:{
+    birthday: {
       type: Date,
       required: true,
       trim: true,
@@ -83,17 +83,18 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    positon:{
+    positon: {
       type: String,
       trim: false,
-      required: false
+      required: false,
     },
-    specialist:{
+    specialist: {
       type: mongoose.SchemaTypes.ObjectId,
       ref: 'Specialist',
       required: false,
-      trim: false
+      trim: false,
     },
+    deviceToken: { type: String, default: '' },
   },
   {
     timestamps: true,

@@ -8,3 +8,6 @@ module.exports.examinationScheduleController = require('./examinationSchedule.co
 module.exports.scheduleDoctorController = require('./scheduleDoctor.controller');
 module.exports.managerController = require('./manager.controller');
 module.exports.messageController = require('./message.controller');
+module.exports.paymentController = require('./payment.controller');
+module.exports.notificationsController = require('./notifications.controller');
+module.exports.voucherController = require('./voucher.controller');

@@ -5,10 +5,10 @@ const { generateSnowflakeId } = require('../utils/snowflake');
 
 const orderSchema = mongoose.Schema(
   {
-    orderId:{
+    orderId: {
       type: String,
       required: true,
-      default: generateSnowflakeId
+      default: generateSnowflakeId,
     },
     patient: {
       type: mongoose.Schema.Types.ObjectId,
@@ -39,14 +39,17 @@ const orderSchema = mongoose.Schema(
         },
         quantity: {
           type: Number,
-          default: 1, 
+          default: 1,
         },
       },
     ],
     examinationScheduleId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'ExaminationSchedule',
-    }
+    },
+    paymentId: {
+      type: String,
+    },
   },
   {
     timestamps: true,

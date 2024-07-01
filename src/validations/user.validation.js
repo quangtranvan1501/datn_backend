@@ -8,7 +8,7 @@ const createUser = {
     password: Joi.string().required().custom(password),
     name: Joi.string().required(),
     username: Joi.string().required(),
-    gender: Joi.string().required().valid('Male', 'Female', 'Other'), 
+    gender: Joi.string().required().valid('Male', 'Female', 'Other'),
     role: Joi.string().required().valid('user', 'admin', 'doctor'),
     phoneNumber: Joi.string().required(),
     address: Joi.string().required(),
@@ -22,7 +22,7 @@ const createDoctor = {
     password: Joi.string().required().custom(password),
     name: Joi.string().required(),
     username: Joi.string().required(),
-    gender: Joi.string().required().valid('Male', 'Female', 'Other'), 
+    gender: Joi.string().required().valid('Male', 'Female', 'Other'),
     role: Joi.string().required().valid('user', 'admin', 'doctor'),
     phoneNumber: Joi.custom((value) => {
       if (typeof value !== 'string') {
@@ -72,7 +72,7 @@ const getUser = {
   }),
 };
 
-const getPatient= {
+const getPatient = {
   params: Joi.object().keys({
     userId: Joi.string().required(),
   }),
@@ -98,6 +98,17 @@ const updateUser = {
     .min(1),
 };
 
+const updateDevice = {
+  params: Joi.object().keys({
+    userId: Joi.string().required(),
+  }),
+  body: Joi.object()
+    .keys({
+      deviceToken: Joi.string().required(),
+    })
+    .min(1),
+};
+
 const deleteUser = {
   params: Joi.object().keys({
     userId: Joi.string().required(),
@@ -107,6 +118,15 @@ const deleteUser = {
 const getDoctorBySpecialistId = {
   params: Joi.object().keys({
     specialistId: Joi.string().required(),
+  }),
+};
+
+const updateDeviceToken = {
+  params: Joi.object().keys({
+    userId: Joi.string().required(),
+  }),
+  body: Joi.object().keys({
+    deviceToken: Joi.string().required(),
   }),
 };
 
@@ -120,5 +140,7 @@ module.exports = {
   getDoctorBySpecialistId,
   getPatient,
   searchUser,
-  searchDoctor
+  searchDoctor,
+  updateDevice,
+  updateDeviceToken,
 };

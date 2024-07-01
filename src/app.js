@@ -10,11 +10,15 @@ const config = require('./config/config');
 const morgan = require('./config/morgan');
 const { jwtStrategy } = require('./config/passport');
 const { authLimiter } = require('./middlewares/rateLimiter');
+
+const { createClient } = require('./utils/redis');
 const routes = require('./routes/v1');
 const { errorConverter, errorHandler } = require('./middlewares/error');
 const ApiError = require('./utils/ApiError');
 const createWeeklySchedules = require('./utils/schedulerAuto');
 const cron = require('node-cron');
+
+// createClient();
 
 const app = express();
 
@@ -67,7 +71,7 @@ app.use(errorConverter);
 app.use(errorHandler);
 
 // cron.schedule('0 16 * * *', () => {
-//   createWeeklySchedules(); 
+//   createWeeklySchedules();
 // });
 
 module.exports = app;

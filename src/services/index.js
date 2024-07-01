@@ -10,3 +10,6 @@ module.exports.examinationScheduleService = require('./examinationSchedule.servi
 module.exports.scheduleDoctorService = require('./scheduleDoctor.service');
 module.exports.managerService = require('./manager.service');
 module.exports.messageService = require('./message.service');
+module.exports.paymentService = require('./payment.service');
+module.exports.notificationsService = require('./notifications.service');
+module.exports.voucherService = require('./voucher.service');

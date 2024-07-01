@@ -21,35 +21,32 @@ const createOrder = async (orderBody) => {
  * @returns {Promise<QueryResult>}
  */
 const queryOrders = async (filter, options) => {
-  const populateOptions = [
-    'patient',
-    'orderService.service',
-  ].join(',');
+  const populateOptions = ['patient', 'orderService.service'].join(',');
   const paginationOptions = {
     ...options,
     populate: populateOptions,
   };
-  if(filter.orderDate){
+  if (filter.orderDate) {
     const startOfDay = new Date(filter.orderDate);
     startOfDay.setHours(0, 0, 0, 0);
     const endOfDay = new Date(startOfDay);
     endOfDay.setHours(23, 59, 59, 999);
     filter.orderDate = {
       $gte: startOfDay,
-      $lte: endOfDay
-    }
+      $lte: endOfDay,
+    };
   }
   const orders = await Order.paginate(filter, paginationOptions);
-  const orders2 = orders.results.map(order => {
+  const orders2 = orders.results.map((order) => {
     const patientDetails = {
       userId: order.patient.userId,
       name: order.patient.name,
       gender: order.patient.gender,
       address: order.patient.address,
-      birthday: order.patient.birthday
+      birthday: order.patient.birthday,
     };
     return {
-      ...order.toObject(), 
+      ...order.toObject(),
       patient: patientDetails,
     };
   });
@@ -63,11 +60,20 @@ const queryOrders = async (filter, options) => {
  * @returns {Promise<Order>}
  */
 const getOrderById = async (orderId) => {
-  return Order.findOne({orderId}).populate('patient').populate('orderService.service');
+  return Order.findOne({ orderId }).populate('patient').populate('orderService.service');
 };
 
-const getOrdersByUserId = async (userId) => {
-  return Order.find({patient: userId}).populate('patient').populate('orderService.service');
+const getOrdersByUserId = async (options, filter) => {
+  const populateOptions = ['orderService.service'].join(',');
+  const paginationOptions = {
+    ...options,
+    populate: populateOptions,
+  };
+
+  // const orders = await Order.paginate({ patient: userId }, paginationOptions);
+
+  const orders = await Order.paginate(filter, paginationOptions);
+  return orders;
 };
 
 /**
@@ -100,11 +106,66 @@ const deleteOrderById = async (orderId) => {
   return order;
 };
 
+//Tôi muốn lấy danh sách 9 dịch vụ nhiều lượt đặt nhất
+const getTopServices = async () => {
+  const orders = await Order.aggregate([
+    {
+      $unwind: '$orderService',
+    },
+    {
+      $group: {
+        _id: '$orderService.service',
+        count: { $sum: 1 },
+      },
+    },
+    {
+      $sort: { count: -1 },
+    },
+    {
+      $lookup: {
+        from: 'services',
+        localField: '_id',
+        foreignField: '_id',
+        as: 'serviceDetails',
+      },
+    },
+    {
+      $unwind: '$serviceDetails',
+    },
+    {
+      $lookup: {
+        from: 'specialists',
+        localField: 'serviceDetails.specialist',
+        foreignField: '_id',
+        as: 'specialistDetails',
+      },
+    },
+    {
+      $unwind: '$specialistDetails',
+    },
+    {
+      $project: {
+        serviceId: '$serviceDetails.serviceId',
+        serviceName: '$serviceDetails.name',
+        count: 1,
+        specialistName: '$specialistDetails.name',
+      },
+    },
+    {
+      $limit: 9,
+    },
+  ]);
+  //Trả về danh sách dịch vụ
+
+  return orders;
+};
+
 module.exports = {
   createOrder,
   queryOrders,
   getOrderById,
   updateOrderById,
   deleteOrderById,
-  getOrdersByUserId
+  getOrdersByUserId,
+  getTopServices,
 };

@@ -5,19 +5,25 @@ const Token = require('../models/token.model');
 const ApiError = require('../utils/ApiError');
 const { tokenTypes } = require('../config/tokens');
 const bcrypt = require('bcryptjs');
+const notificationsService = require('./notifications.service');
 /**
  * Login with username and password
  * @param {string} email
  * @param {string} password
  * @returns {Promise<User>}
  */
-const loginUserWithEmailAndPassword = async (email, password) => {
-  const user = await userService.getUserByEmail(email) || await userService.getUserByUsername(email);
+const loginUserWithEmailAndPassword = async (email, password, deviceToken) => {
+  const user = (await userService.getUserByEmail(email)) || (await userService.getUserByUsername(email));
   if (user.status === '0') {
     throw new ApiError(httpStatus.FORBIDDEN, 'Tài khoản bị vô hiệu hóa');
   }
   if (!user || !(await user.isPasswordMatch(password))) {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect email or password');
+  }
+  if (deviceToken) {
+    // console.log('deviceToken', deviceToken);
+    console.log('user.userId', user.userId);
+    await notificationsService.saveToken(user.userId, deviceToken);
   }
   return user;
 };
@@ -28,11 +34,17 @@ const loginUserWithEmailAndPassword = async (email, password) => {
  * @returns {Promise}
  */
 const logout = async (refreshToken) => {
-  const refreshTokenDoc = await Token.findOne({ token: refreshToken, type: tokenTypes.REFRESH, blacklisted: false });
+  const refreshTokenDoc = await Token.findOne({
+    token: refreshToken,
+    type: tokenTypes.REFRESH,
+    blacklisted: false,
+  }).populate('user');
   if (!refreshTokenDoc) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Not found');
   }
   await refreshTokenDoc.remove();
+
+  notificationsService.removeToken(refreshTokenDoc.user?.userId);
 };
 
 /**
@@ -64,7 +76,7 @@ const resetPassword = async (id, currentPassword, newPassword) => {
     const user = await userService.getUserById(id);
     // const currentPassword2 = await bcrypt.hash(currentPassword, 8)
     const passwordMatch = await bcrypt.compare(currentPassword, user.password);
-    if(user != null && !passwordMatch){
+    if (user != null && !passwordMatch) {
       throw new ApiError(httpStatus.CONFLICT, 'Mật khẩu hiện tại không đúng');
     }
     await userService.updateUserById(user.id, { password: newPassword });

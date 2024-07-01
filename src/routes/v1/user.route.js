@@ -16,6 +16,8 @@ router.route('/search-doctor').get(auth('manageUsers'), validate(userValidation.
 
 router.route('/tvv').get(auth(), userController.getTVV);
 
+router.route('/device/:userId').patch(auth(), validate(userValidation.updateDeviceToken), userController.updateDeviceToken);
+
 router
   .route('/')
   .post(auth('manageUsers'), validate(userValidation.createUser), userController.createUser)
@@ -25,9 +27,13 @@ router
   .route('/:userId')
   .get(auth('getUsers'), validate(userValidation.getUser), userController.getUser)
   .patch(auth(), validate(userValidation.updateUser), userController.updateUser)
-  .delete(auth('manageUsers'), validate(userValidation.deleteUser), userController.deleteUser);
+  .delete(auth('manageUsers'), validate(userValidation.deleteUser), userController.deleteUser)
+  .patch(auth(), validate(userValidation.updateDevice), userController.updateDevice);
 
-router.route('/doctor/:specialistId').get(auth(), validate(userValidation.getDoctorBySpecialistId), userController.getDoctorBySpecialistId);
+router
+  .route('/doctor/:specialistId')
+  .get(validate(userValidation.getDoctorBySpecialistId), userController.getDoctorBySpecialistId);
+
 module.exports = router;
 
 /**

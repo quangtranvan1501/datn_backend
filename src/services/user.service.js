@@ -173,11 +173,22 @@ const deleteUserById = async (userId) => {
 };
 
 const getDoctorBySpecialistId = async (specialistId) => {
-  return User.find({ specialist: specialistId });
+  //tôi muốn chỉ hiên thông tin id userId name của bác sĩ
+  const doctors = await User.find({ specialist: specialistId }).select('id userId name');
+  return doctors;
 };
 
 const getTVV = async () => {
   return User.find({ role: 'admin' }).select('id userId name');
+};
+const updateDeviceToken = async (userId, deviceToken) => {
+  const user = await User.findOne({ userId });
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+  }
+  user.deviceToken = deviceToken;
+  await user.save();
+  return true;
 };
 
 module.exports = {
@@ -196,4 +207,5 @@ module.exports = {
   searchUser,
   searchDoctor,
   getTVV,
+  updateDeviceToken,
 };

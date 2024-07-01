@@ -30,13 +30,22 @@ const querySpecialists = async (filter, options) => {
   return specialists;
 };
 
+const getAllSpecialists = async () => {
+  try {
+    const specialists = await Specialist.find();
+    return specialists;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
 /**
  * Get specialist by id
  * @param {string} specialistId
  * @returns {Promise<Specialist>}
  */
 const getSpecialistById = async (specialistId) => {
-  return Specialist.findOne({specialistId});
+  return Specialist.findOne({ specialistId });
 };
 
 /**
@@ -75,4 +84,5 @@ module.exports = {
   getSpecialistById,
   updateSpecialistById,
   deleteSpecialistById,
+  getAllSpecialists,
 };

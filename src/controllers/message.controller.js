@@ -31,8 +31,19 @@ const getOnlineUsers = async (req, res, next) => {
   }
 };
 
+const chatbot = async (req, res, next) => {
+  try {
+    const { message } = req.body;
+    const response = await messageService.chatbot(message);
+    res.json(response);
+  } catch (ex) {
+    next(ex);
+  }
+};
+
 module.exports = {
   getMessages,
   addMessage,
   getOnlineUsers,
+  chatbot,
 };

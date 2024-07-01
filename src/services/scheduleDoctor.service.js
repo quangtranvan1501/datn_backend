@@ -28,7 +28,7 @@ const querySchedules = async (filter, options) => {
     const page = options.page && parseInt(options.page, 10) > 0 ? parseInt(options.page, 10) : 1;
     const skip = (page - 1) * limit;
     const sortBy = options.sortBy;
-    
+
     const sortOptions = {};
 
     if (sortBy) {
@@ -36,17 +36,14 @@ const querySchedules = async (filter, options) => {
       sortOptions[key] = order === 'desc' ? -1 : 1;
     }
 
-    const schedules = await ScheduleDoctor.find(filter)
-      .skip(skip)
-      .limit(limit)
-      .sort(sortOptions);
+    const schedules = await ScheduleDoctor.find(filter).skip(skip).limit(limit).sort(sortOptions);
     const totalResults = await ScheduleDoctor.countDocuments(filter);
 
     return {
       totalResults,
       page,
       limit,
-      results: schedules
+      results: schedules,
     };
   } catch (error) {
     throw new Error(error.message);
@@ -97,27 +94,38 @@ const checkScheduleExists = async (doctorId, day) => {
   return existingSchedule !== null;
 };
 
-const getScheduleByDoctorId = async (doctorId, page, limit, sortBy) => {
+const getScheduleByDoctorId = async (doctorId, page, limit, sortBy, status) => {
   try {
     const skip = (page - 1) * limit;
     const sortOptions = {};
+    let totalResults;
+    let schedules;
 
     if (sortBy) {
       const [key, order] = sortBy.split(':');
       sortOptions[key] = order === 'desc' ? -1 : 1;
     }
 
-    const schedules = await ScheduleDoctor.find({ doctorId })
-      .skip(skip)
-      .limit(limit)
-      .sort(sortOptions);
-    const totalResults = await ScheduleDoctor.countDocuments({ doctorId });
+    //Nếu có status thì lọc theo status nếu ko thì ko xet
+    if (status) {
+      schedules = await ScheduleDoctor.find({
+        doctorId: doctorId,
+        status: status,
+      })
+        .skip(skip)
+        .limit(limit)
+        .sort(sortOptions);
+      totalResults = await ScheduleDoctor.countDocuments({ doctorId, status });
+    } else {
+      schedules = await ScheduleDoctor.find({ doctorId: doctorId }).skip(skip).limit(limit).sort(sortOptions);
+      totalResults = await ScheduleDoctor.countDocuments({ doctorId });
+    }
 
     return {
       totalResults,
       page,
       limit,
-      results: schedules
+      results: schedules,
     };
   } catch (error) {
     throw new Error(error.message);
@@ -131,5 +139,5 @@ module.exports = {
   updateScheduleById,
   deleteScheduleById,
   checkScheduleExists,
-  getScheduleByDoctorId
+  getScheduleByDoctorId,
 };

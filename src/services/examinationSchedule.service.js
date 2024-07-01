@@ -6,12 +6,13 @@ global.examinationInterval = 30;
 const isWithinWorkingHours = async (doctorId, appointmentDate) => {
   console.log(doctorId, appointmentDate);
   const appointmentDay = new Date(appointmentDate.getTime());
-  appointmentDay.setUTCHours(0, 0, 0, 0);
+  const startRange = appointmentDay.setUTCHours(0, 0, 0, 0);
+  const endRange = appointmentDay.setUTCHours(23, 59, 59, 999);
   console.log(appointmentDay);
   const doctorSchedule = await ScheduleDoctor.findOne({
     doctorId: doctorId,
-    day: appointmentDay, // Check for the same day
-    status: '1'
+    day: { $gte: startRange, $lte: endRange }, // Check for the same day
+    status: '1',
   });
 
   if (!doctorSchedule) {
@@ -40,18 +41,20 @@ const hasConflictingAppointment = async (doctorId, appointmentDate, interval) =>
 
   const existingAppointment = await ExaminationSchedule.findOne({
     doctor: doctorId,
-    day: { $gte: startRange, $lte: endRange }
+    day: { $gte: startRange, $lte: endRange },
   });
 
   if (existingAppointment) {
-    const conflictingTime = existingAppointment.day.getHours() + ':' + String(existingAppointment.day.getMinutes()).padStart(2, '0');
-    throw new ApiError(httpStatus.BAD_REQUEST, `Bác sỹ đã có lịch vào ${conflictingTime}, vui lòng đặt lịch trước hoặc sau ${interval} phút.`);
+    const conflictingTime =
+      existingAppointment.day.getHours() + ':' + String(existingAppointment.day.getMinutes()).padStart(2, '0');
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      `Bác sỹ đã có lịch vào ${conflictingTime}, vui lòng đặt lịch trước hoặc sau ${interval} phút.`
+    );
   }
 
   return false;
 };
-
-
 
 /**
  * Create an examination schedule
@@ -70,7 +73,7 @@ const checkDoctorShedule = async (doctorId, day) => {
 
   const checkTime = await isWithinWorkingHours(doctorId, appointmentDate);
 
-  const interval = 30;
+  const interval = 29;
 
   const checkConflict = await hasConflictingAppointment(doctorId, appointmentDate, interval);
 
@@ -79,7 +82,7 @@ const checkDoctorShedule = async (doctorId, day) => {
   } else {
     return false;
   }
-}
+};
 
 /**
  * Query for examination schedules
@@ -91,53 +94,49 @@ const checkDoctorShedule = async (doctorId, day) => {
  * @returns {Promise<QueryResult>}
  */
 const queryExaminationSchedules = async (filter, options) => {
-  const populateOptions = [
-    'patient',
-    'service.specialist',
-    'doctor',
-  ].join(',');
+  const populateOptions = ['patient', 'service.specialist', 'doctor'].join(',');
   const paginationOptions = {
     ...options,
     populate: populateOptions,
   };
-  if(filter.day){
+  if (filter.day) {
     const startOfDay = new Date(filter.day);
     startOfDay.setHours(0, 0, 0, 0);
     const endOfDay = new Date(startOfDay);
     endOfDay.setHours(23, 59, 59, 999);
     filter.day = {
       $gte: startOfDay,
-      $lte: endOfDay
-    }
+      $lte: endOfDay,
+    };
   }
   const examinationSchedules = await ExaminationSchedule.paginate(filter, paginationOptions);
-  const examinationSchedules2 = examinationSchedules.results.map(shedule => {
+  const examinationSchedules2 = examinationSchedules.results.map((shedule) => {
     const patientDetails = {
       userId: shedule.patient.userId,
       name: shedule.patient.name,
       gender: shedule.patient.gender,
       address: shedule.patient.address,
-      birthday: shedule.patient.birthday
+      birthday: shedule.patient.birthday,
     };
     let doctorName = {};
-    if(shedule.doctor){
+    if (shedule.doctor) {
       doctorName = {
         userId: shedule.doctor.userId,
         name: shedule.doctor.name,
         gender: shedule.patient.gender,
         address: shedule.patient.address,
-        birthday: shedule.patient.birthday
+        birthday: shedule.patient.birthday,
       };
     }
     const serviceName = {
       name: shedule.service.name,
-      specialist: shedule.service.specialist
+      specialist: shedule.service.specialist,
     };
     return {
-      ...shedule.toObject(), 
+      ...shedule.toObject(),
       patient: patientDetails,
       doctor: doctorName,
-      service: serviceName
+      service: serviceName,
     };
   });
   examinationSchedules.results = examinationSchedules2;
@@ -151,11 +150,7 @@ const queryExaminationSchedules = async (filter, options) => {
  */
 const getExaminationSchedulesByPatientId = async (options, patientId) => {
   const filter = { patient: patientId };
-  const populateOptions = [
-    'patient',
-    'service.specialist',
-    'doctor',
-  ].join(',');
+  const populateOptions = ['patient', 'service.specialist', 'doctor'].join(',');
 
   const paginationOptions = {
     ...options,
@@ -176,7 +171,7 @@ const getExaminationSchedulesByPatientId = async (options, patientId) => {
 //       },
 //     })
 //     .populate('doctor');
-  
+
 //   const examinationUser2 = await examinationUser.paginate({}, options);
 //   return examinationUser2
 // };
@@ -191,7 +186,7 @@ const getExaminationSchedulesByDoctorId = async (doctorId) => {
       },
     })
     .populate('doctor');
-}
+};
 
 /**
  * Get examination schedule by id
@@ -203,8 +198,7 @@ const getExaminationScheduleById = async (examinationScheduleId) => {
     .populate('patient', 'name userId birthday address gender')
     .populate('service', 'name specialist')
     .populate('doctor', 'name userId birthday address gender');
-
-};  
+};
 
 /**
  * Update examination schedule by id
@@ -238,18 +232,19 @@ const deleteExaminationScheduleById = async (examinationScheduleId) => {
 
 const getDoctorScheduleDays = async (doctor) => {
   const doctorSchedule = await ExaminationSchedule.find({ doctor });
-  const uniqueDaysSet = new Set(doctorSchedule.map((schedule) => {
-    const date = schedule.day;
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  }));
+  const uniqueDaysSet = new Set(
+    doctorSchedule.map((schedule) => {
+      const date = schedule.day;
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    })
+  );
   return [...uniqueDaysSet];
-}
+};
 
 const getExaminationScheduleByDay = async (doctor, day) => {
-
   const startOfDay = new Date(day);
   startOfDay.setHours(0, 0, 0, 0);
 
@@ -260,15 +255,17 @@ const getExaminationScheduleByDay = async (doctor, day) => {
     doctor: doctor,
     day: {
       $gte: startOfDay,
-      $lte: endOfDay
-    }
-  }).populate('patient').populate('service');
-  return examinationSchedule
-}
+      $lte: endOfDay,
+    },
+  })
+    .populate('patient')
+    .populate('service');
+  return examinationSchedule;
+};
 
 const searchByDay = async (filter, options) => {
   return ExaminationSchedule.paginate(filter, options);
-}
+};
 module.exports = {
   createExaminationSchedule,
   queryExaminationSchedules,
@@ -280,5 +277,5 @@ module.exports = {
   getExaminationSchedulesByDoctorId,
   getDoctorScheduleDays,
   getExaminationScheduleByDay,
-  searchByDay
+  searchByDay,
 };

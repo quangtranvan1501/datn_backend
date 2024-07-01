@@ -9,7 +9,7 @@ const createScheduleDoctor = catchAsync(async (req, res) => {
   res.status(httpStatus.CREATED).send({
     code: httpStatus.CREATED,
     message: 'Tạo lịch làm việc thành công',
-    data: scheduleDoctor
+    data: scheduleDoctor,
   });
 });
 
@@ -32,7 +32,7 @@ const getScheduleById = catchAsync(async (req, res) => {
   res.status(httpStatus.OK).send({
     code: httpStatus.OK,
     message: 'Lấy thông tin lịch làm việc thành công',
-    data: scheduleDoctor
+    data: scheduleDoctor,
   });
 });
 
@@ -44,29 +44,33 @@ const updateScheduleById = catchAsync(async (req, res) => {
   res.status(httpStatus.OK).send({
     code: httpStatus.OK,
     message: 'Cập nhật lịch làm việc thành công',
-    data: scheduleDoctor
+    data: scheduleDoctor,
   });
 });
 
 const deleteScheduleById = catchAsync(async (req, res) => {
   await scheduleDoctorService.deleteScheduleById(req.params.scheduleDoctorId);
-  res.status(httpStatus.OK).send(
-    {
-      code: httpStatus.OK,
-      message: 'Xóa lịch làm việc thành công'
-    }
-  );
+  res.status(httpStatus.OK).send({
+    code: httpStatus.OK,
+    message: 'Xóa lịch làm việc thành công',
+  });
 });
 
 const getScheduleByDoctorId = catchAsync(async (req, res) => {
-  const { doctorId, page = 1, limit = 10, sortBy } = req.query;
-  const result = await scheduleDoctorService.getScheduleByDoctorId(doctorId, parseInt(page), parseInt(limit), sortBy);
+  const { doctorId, page = 1, limit = 10, sortBy, status } = req.query;
+  const result = await scheduleDoctorService.getScheduleByDoctorId(
+    doctorId,
+    parseInt(page),
+    parseInt(limit),
+    sortBy,
+    status
+  );
   res.status(httpStatus.OK).send({
     code: httpStatus.OK,
     message: 'Lấy danh sách lịch làm việc theo bác sĩ thành công',
-    data: result
+    data: result,
   });
-})
+});
 
 module.exports = {
   createScheduleDoctor,
@@ -74,5 +78,5 @@ module.exports = {
   getScheduleById,
   updateScheduleById,
   deleteScheduleById,
-  getScheduleByDoctorId
+  getScheduleByDoctorId,
 };

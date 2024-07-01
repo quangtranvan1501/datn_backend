@@ -22,13 +22,15 @@ const updateScheduleDoctor = {
   params: Joi.object().keys({
     scheduleDoctorId: Joi.string().required(),
   }),
-  body: Joi.object().keys({
-    doctorId: Joi.string().custom(objectId),
-    day: Joi.date(),
-    startTime: timeFormat,
-    endTime: timeFormat,
-    status: Joi.string(),
-  }).min(1), 
+  body: Joi.object()
+    .keys({
+      doctorId: Joi.string().custom(objectId),
+      day: Joi.date(),
+      startTime: timeFormat,
+      endTime: timeFormat,
+      status: Joi.string(),
+    })
+    .min(1),
 };
 
 const deleteScheduleDoctor = {
@@ -40,6 +42,7 @@ const deleteScheduleDoctor = {
 const getScheduleDoctorByDoctorId = {
   params: Joi.object().keys({
     doctorId: Joi.string().custom(objectId),
+    status: Joi.string(),
     sortBy: Joi.string(),
     limit: Joi.number().integer(),
     page: Joi.number().integer(),
@@ -63,5 +66,5 @@ module.exports = {
   updateScheduleDoctor,
   deleteScheduleDoctor,
   getScheduleDoctorByDoctorId,
-  getScheduleDoctor
+  getScheduleDoctor,
 };

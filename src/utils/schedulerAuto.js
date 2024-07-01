@@ -19,6 +19,7 @@ const createWeeklySchedules = async () => {
           day: nextDay,
           startTime: '08:00',
           endTime: '17:00',
+          status: '1',
         });
       }
     }
@@ -28,13 +29,13 @@ const createWeeklySchedules = async () => {
 // Hàm lấy ngày tiếp theo của một ngày trong tuần
 const getNextDayOfWeek = (dayName) => {
   const dayOfWeek = {
-    'Monday': 1,
-    'Tuesday': 2,
-    'Wednesday': 3,
-    'Thursday': 4,
-    'Friday': 5,
-    'Saturday': 6,
-    'Sunday': 0,
+    Monday: 1,
+    Tuesday: 2,
+    Wednesday: 3,
+    Thursday: 4,
+    Friday: 5,
+    Saturday: 6,
+    Sunday: 0,
   };
 
   const now = new Date();

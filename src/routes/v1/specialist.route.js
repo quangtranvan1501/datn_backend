@@ -6,16 +6,18 @@ const auth = require('../../middlewares/auth');
 
 const router = express.Router();
 
-router
-    .route('/')
-    .post(auth(), validate(specialistValidation.createSpecialist), specialistController.createSpecialist)
-    .get(specialistController.getSpecialists);
+router.route('/getAllSpecialists').get(auth(), specialistController.getAllSpecialists);
 
 router
-    .route('/:specialistId')
-    .get(auth(), validate(specialistValidation.getSpecialistById), specialistController.getSpecialistById)
-    .patch(auth('manageUsers'), validate(specialistValidation.updateSpecialist), specialistController.updateSpecialistById)
-    .delete(auth('manageUsers'), validate(specialistValidation.deleteSpecialist), specialistController.deleteSpecialistById);
+  .route('/')
+  .post(auth(), validate(specialistValidation.createSpecialist), specialistController.createSpecialist)
+  .get(specialistController.getSpecialists);
+
+router
+  .route('/:specialistId')
+  .get(auth(), validate(specialistValidation.getSpecialistById), specialistController.getSpecialistById)
+  .patch(auth('manageUsers'), validate(specialistValidation.updateSpecialist), specialistController.updateSpecialistById)
+  .delete(auth('manageUsers'), validate(specialistValidation.deleteSpecialist), specialistController.deleteSpecialistById);
 
 module.exports = router;
 
@@ -55,4 +57,3 @@ module.exports = router;
  *       "400":
  *         $ref: '#/components/responses/BadRequest'
  */
-

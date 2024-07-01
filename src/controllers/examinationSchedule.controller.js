@@ -9,7 +9,7 @@ const createExaminationSchedule = catchAsync(async (req, res) => {
   res.status(httpStatus.CREATED).send({
     code: httpStatus.CREATED,
     message: 'Đặt lịch khám thành công',
-    data: examinationSchedule
+    data: examinationSchedule,
   });
 });
 
@@ -20,7 +20,7 @@ const getExaminationSchedules = catchAsync(async (req, res) => {
   res.status(httpStatus.OK).send({
     code: httpStatus.OK,
     message: 'Lấy danh sách lịch khám thành công',
-    data: result
+    data: result,
   });
 });
 
@@ -32,16 +32,19 @@ const getExaminationScheduleById = catchAsync(async (req, res) => {
   res.status(httpStatus.OK).send({
     code: httpStatus.OK,
     message: 'Lấy thông tin lịch khám thành công',
-    data: examinationSchedule
+    data: examinationSchedule,
   });
 });
 
 const updateExaminationScheduleById = catchAsync(async (req, res) => {
-  const examinationSchedule = await examinationScheduleService.updateExaminationScheduleById(req.params.examinationScheduleId, req.body);
+  const examinationSchedule = await examinationScheduleService.updateExaminationScheduleById(
+    req.params.examinationScheduleId,
+    req.body
+  );
   res.status(httpStatus.OK).send({
     code: httpStatus.OK,
     message: 'Cập nhật lịch khám thành công',
-    data: examinationSchedule
+    data: examinationSchedule,
   });
 });
 
@@ -49,7 +52,7 @@ const deleteExaminationScheduleById = catchAsync(async (req, res) => {
   await examinationScheduleService.deleteExaminationScheduleById(req.params.examinationScheduleId);
   res.status(httpStatus.OK).send({
     code: httpStatus.OK,
-    message: 'Xóa lịch khám thành công'
+    message: 'Xóa lịch khám thành công',
   });
 });
 
@@ -58,48 +61,51 @@ const checkDoctorShedule = catchAsync(async (req, res) => {
   await examinationScheduleService.checkDoctorShedule(doctor, day);
   res.status(httpStatus.OK).send({
     code: httpStatus.OK,
-    message: 'Kiểm tra lịch khám bác sĩ thành công'
+    message: 'Kiểm tra lịch khám bác sĩ thành công',
   });
-})
+});
 
 const getExaminationScheduleByUserId = catchAsync(async (req, res) => {
-  const options = pick(req.query, ['sortBy', 'limit', 'page'])
+  const options = pick(req.query, ['sortBy', 'limit', 'page']);
 
-  const examinationSchedules = await examinationScheduleService.getExaminationSchedulesByPatientId(options, req.params.userId);
+  const examinationSchedules = await examinationScheduleService.getExaminationSchedulesByPatientId(
+    options,
+    req.params.userId
+  );
   res.status(httpStatus.OK).send({
     code: httpStatus.OK,
     message: 'Lấy danh sách lịch khám thành công',
-    data: examinationSchedules
+    data: examinationSchedules,
   });
-})
+});
 
 const getExaminationSchedulesByDoctorId = catchAsync(async (req, res) => {
   const examinationSchedules = await examinationScheduleService.getExaminationSchedulesByDoctorId(req.params.doctorId);
   res.status(httpStatus.OK).send({
     code: httpStatus.OK,
     message: 'Lấy danh sách lịch khám thành công',
-    data: examinationSchedules
+    data: examinationSchedules,
   });
-})
+});
 
 const getDoctorScheduleDays = catchAsync(async (req, res) => {
   const doctorScheduleDays = await examinationScheduleService.getDoctorScheduleDays(req.params.doctorId);
   res.status(httpStatus.OK).send({
     code: httpStatus.OK,
     message: 'Lấy danh sách ngày làm việc của bác sĩ thành công',
-    data: doctorScheduleDays
+    data: doctorScheduleDays,
   });
-})
+});
 
 const getExaminationScheduleByDay = catchAsync(async (rep, res) => {
-  const {doctor, day} = rep.body
+  const { doctor, day } = rep.body;
   const doctorScheduleDays = await examinationScheduleService.getExaminationScheduleByDay(doctor, day);
   res.status(httpStatus.OK).send({
     code: httpStatus.OK,
     message: 'Lấy danh sách ngày làm việc của bác sĩ thành công',
-    data: doctorScheduleDays
+    data: doctorScheduleDays,
   });
-})
+});
 
 module.exports = {
   createExaminationSchedule,
@@ -111,5 +117,5 @@ module.exports = {
   getExaminationScheduleByUserId,
   getExaminationSchedulesByDoctorId,
   getDoctorScheduleDays,
-  getExaminationScheduleByDay
+  getExaminationScheduleByDay,
 };

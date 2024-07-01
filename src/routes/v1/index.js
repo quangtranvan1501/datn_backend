@@ -10,7 +10,11 @@ const examinationScheduleRoute = require('./examinationSchedule.route');
 const scheduleDoctorRoute = require('./scheduleDoctor.route');
 const managerRoute = require('./manager.route');
 const messageRoute = require('./message.route');
+const paymentRoute = require('./payment.route');
+const notificationRoute = require('./notifications.route');
+const voucherRoute = require('./voucher.route');
 const config = require('../../config/config');
+const { path } = require('../../app');
 
 const router = express.Router();
 
@@ -24,27 +28,27 @@ const defaultRoutes = [
     route: userRoute,
   },
   {
-    path: "/services",
+    path: '/services',
     route: serviceRoute,
   },
   {
-    path: "/specialist",
+    path: '/specialist',
     route: specialistRoute,
   },
   {
-    path: "/medicalRecords",
+    path: '/medicalRecords',
     route: medicalRecordRoute,
   },
   {
-    path: "/orders",
+    path: '/orders',
     route: orderRoute,
   },
   {
-    path: "/examinationSchedules",
+    path: '/examinationSchedules',
     route: examinationScheduleRoute,
   },
   {
-    path: "/scheduleDoctors",
+    path: '/scheduleDoctors',
     route: scheduleDoctorRoute,
   },
   {
@@ -58,8 +62,19 @@ const defaultRoutes = [
   {
     path: '/message',
     route: messageRoute,
-  }
-
+  },
+  {
+    path: '/payment',
+    route: paymentRoute,
+  },
+  {
+    path: '/notifications',
+    route: notificationRoute,
+  },
+  {
+    path: '/vouchers',
+    route: voucherRoute,
+  },
 ];
 
 const devRoutes = [

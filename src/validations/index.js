@@ -7,3 +7,6 @@ module.exports.orderValidation = require('./order.validation');
 module.exports.examinationScheduleValidation = require('./examinationSchedule.validation');
 module.exports.scheduleDoctorValidation = require('./scheduleDoctor.validation');
 module.exports.managerValidation = require('./manager.validation');
+module.exports.paymentValidation = require('./payment.validation');
+module.exports.notificatonsValidation = require('./notifications.validation');
+module.exports.voucherValidation = require('./voucher.validation');

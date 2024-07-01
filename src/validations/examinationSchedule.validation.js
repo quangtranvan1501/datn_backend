@@ -20,11 +20,13 @@ const updateExaminationSchedule = {
   params: Joi.object().keys({
     examinationScheduleId: Joi.string().required(),
   }),
-  body: Joi.object().keys({
-    doctor: Joi.string().custom(objectId),
-    service: Joi.string().custom(objectId),
-    day: Joi.date(),
-  }).min(1),
+  body: Joi.object()
+    .keys({
+      doctor: Joi.string().custom(objectId),
+      service: Joi.string().custom(objectId),
+      day: Joi.date(),
+    })
+    .min(1),
 };
 
 const deleteExaminationSchedule = {
@@ -63,7 +65,7 @@ const getExaminationScheduleByDay = {
     doctor: Joi.string().custom(objectId).required(),
     day: Joi.date().required(),
   }),
-}
+};
 
 const getExaminationSchedule = {
   body: Joi.object().keys({
@@ -72,7 +74,7 @@ const getExaminationSchedule = {
     limit: Joi.number().integer(),
     page: Joi.number().integer(),
   }),
-}
+};
 
 module.exports = {
   createExaminationSchedule,
@@ -84,5 +86,5 @@ module.exports = {
   getExaminationSchedulesByDoctorId,
   getDoctorScheduleDays,
   getExaminationScheduleByDay,
-  getExaminationSchedule
+  getExaminationSchedule,
 };

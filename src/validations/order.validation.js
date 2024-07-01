@@ -25,19 +25,41 @@ const updateOrder = {
   params: Joi.object().keys({
     orderId: Joi.string().required(),
   }),
+  body: Joi.object()
+    .keys({
+      patient: Joi.string().custom(objectId),
+      totalAmount: Joi.number().min(0),
+      discount: Joi.number().min(0),
+      status: Joi.string().valid('0', '1', '-1'),
+      orderDate: Joi.date(),
+      orderService: Joi.array().items(
+        Joi.object().keys({
+          service: Joi.string().custom(objectId),
+          quantity: Joi.number().min(1),
+        })
+      ),
+    })
+    .min(1),
+};
+
+const updateOrderByUser = {
+  params: Joi.object().keys({
+    orderId: Joi.string().required(),
+  }),
+  body: Joi.object()
+    .keys({
+      status: Joi.string().valid('0', '1', '-1'),
+    })
+    .min(1),
+};
+
+const updatePayment = {
+  params: Joi.object().keys({
+    orderId: Joi.string().required(),
+  }),
   body: Joi.object().keys({
-    patient: Joi.string().custom(objectId),
-    totalAmount: Joi.number().min(0),
-    discount: Joi.number().min(0),
-    status: Joi.string().valid('0', '1', '-1'),
-    orderDate: Joi.date(),
-    orderService: Joi.array().items(
-      Joi.object().keys({
-        service: Joi.string().custom(objectId),
-        quantity: Joi.number().min(1),
-      })
-    ),
-  }).min(1),
+    paymentId: Joi.string().required(),
+  }),
 };
 
 const deleteOrder = {
@@ -47,8 +69,11 @@ const deleteOrder = {
 };
 
 const getOrdersByUserId = {
-  params: Joi.object().keys({
-    userId: Joi.string().custom(objectId),
+  query: Joi.object().keys({
+    patient: Joi.string().custom(objectId),
+    sortBy: Joi.string(),
+    limit: Joi.number().integer(),
+    page: Joi.number().integer(),
   }),
 };
 
@@ -69,4 +94,6 @@ module.exports = {
   updateOrder,
   deleteOrder,
   getOrdersByUserId,
+  updatePayment,
+  updateOrderByUser,
 };
