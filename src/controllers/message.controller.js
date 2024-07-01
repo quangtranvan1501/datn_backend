@@ -34,6 +34,7 @@ const getOnlineUsers = async (req, res, next) => {
 const chatbot = async (req, res, next) => {
   try {
     const { message } = req.body;
+    console.log('message', message);
     const response = await messageService.chatbot(message);
     res.json(response);
   } catch (ex) {
