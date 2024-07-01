@@ -3,7 +3,7 @@ const pick = require('../utils/pick');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const { userService } = require('../services');
-const { getOrSetCache } = require('../utils/redis');
+// const { getOrSetCache } = require('../utils/redis');
 
 const createUser = catchAsync(async (req, res) => {
   const user = await userService.createUser(req.body);
@@ -103,27 +103,34 @@ const deleteUser = catchAsync(async (req, res) => {
 });
 
 const getDoctorBySpecialistId = catchAsync(async (req, res) => {
-  console.log('getDoctorBySpecialistId');
-  const specialistId = req.params.specialistId;
-  const cacheKey = `doctors:${specialistId}`;
+  const result = await userService.getDoctorBySpecialistId(req.params.specialistId);
+  res.status(httpStatus.OK).send({
+    code: httpStatus.OK,
+    message: 'Lấy danh sách bác sĩ thành công',
+    data: result,
+  });
 
-  try {
-    const result = await getOrSetCache(cacheKey, 3600, async () => {
-      return await userService.getDoctorBySpecialistId(specialistId);
-    });
+  // console.log('getDoctorBySpecialistId');
+  // const specialistId = req.params.specialistId;
+  // const cacheKey = `doctors:${specialistId}`;
 
-    res.status(httpStatus.OK).send({
-      code: httpStatus.OK,
-      message: 'Lấy danh sách bác sĩ thành công',
-      data: result,
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
-      code: httpStatus.INTERNAL_SERVER_ERROR,
-      message: 'Internal Server Error',
-    });
-  }
+  // try {
+  //   const result = await getOrSetCache(cacheKey, 3600, async () => {
+  //     return await userService.getDoctorBySpecialistId(specialistId);
+  //   });
+
+  //   res.status(httpStatus.OK).send({
+  //     code: httpStatus.OK,
+  //     message: 'Lấy danh sách bác sĩ thành công',
+  //     data: result,
+  //   });
+  // } catch (err) {
+  //   console.error(err);
+  //   res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+  //     code: httpStatus.INTERNAL_SERVER_ERROR,
+  //     message: 'Internal Server Error',
+  //   });
+  // }
 });
 
 const getPatient = catchAsync(async (req, res) => {
